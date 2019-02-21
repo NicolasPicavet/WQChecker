@@ -23,7 +23,7 @@ def popupView(msg):
     B1.pack()
     popupWindow.mainloop()
 
-def createStatusView(closeCallback, regionCallback):
+def createStatusView(closeCallback, regionCallback, checkNowCallback):
     global statusText
 
     statusWindow = tk.Tk()
@@ -32,6 +32,8 @@ def createStatusView(closeCallback, regionCallback):
 
     mainFrame = tk.Frame(statusWindow)
     mainFrame.pack(fill='both', expand=True)
+
+    # Radio buttons
 
     radioFrame = tk.Frame(mainFrame)
     radioFrame.grid(row=0, column=0, sticky='we', padx=2, pady=2)
@@ -46,16 +48,27 @@ def createStatusView(closeCallback, regionCallback):
     euRadio.grid(row=0, column=1)
     euRadio.select()
 
-    statusText = tk.Text(mainFrame, font=('Helvetica', 10))
-    statusText.grid(row=1, column=0, padx=2, pady=2)
+    # Status text
+
+    statusFrame = tk.Frame(mainFrame)
+    statusFrame.grid(row=1, column=0, sticky='we', padx=2, pady=2)
+    statusFrame.grid_columnconfigure(0, weight=1)
+
+    statusText = tk.Text(statusFrame, font=('Helvetica', 10))
+    statusText.grid(row=0, column=0, padx=2, pady=2)
     statusText.config(state=tk.DISABLED)
 
-    statusTextScrollBar = tk.Scrollbar(mainFrame, command=statusText.yview)
+    statusTextScrollBar = tk.Scrollbar(statusFrame, command=statusText.yview)
     statusText['yscrollcommand'] = statusTextScrollBar.set
-    statusTextScrollBar.grid(row=1, column=1, sticky='ns')
+    statusTextScrollBar.grid(row=0, column=1, sticky='ns')
 
-    closeButton = tk.Button(mainFrame, text='Close', command=closeCallback)
-    closeButton.grid(row=2, column=0, padx=2, pady=2)
+    # Buttons
+
+    buttonsFrame = tk.Frame(mainFrame)
+    buttonsFrame.grid(row=2, column=0, sticky='we', padx=2, pady=2)
+
+    tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).grid(row=0, column=0, padx=2, pady=2)
+    tk.Button(buttonsFrame, text='Close', command=closeCallback).grid(row=0, column=1, padx=2, pady=2)
 
     return statusWindow
 

@@ -41,23 +41,29 @@ def checkWQ():
 
 def changeRegion(newRegion):
     global region
-    timer.cancel()
     region = newRegion
     checkerLoop()
 
-def stopChecker():
-    timer.cancel()
-    exit()
+def stopTimer():
+    try:
+        timer.cancel()
+    except NameError:
+        pass
 
 def checkerLoop():
     global timer
+    stopTimer()
     checkWQ()
     timer = threading.Timer(timerLength, checkerLoop)
     timer.start()
 
+def exitApp():
+    stopTimer()
+    exit()
 
 
-statusView = gui.createStatusView(closeCallback=stopChecker, regionCallback=changeRegion)
+
+statusView = gui.createStatusView(closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ)
 
 checkerLoop()
 
