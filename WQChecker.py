@@ -9,7 +9,8 @@ import datetime
 url = 'https://www.wowhead.com/world-quests/bfa/'
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
 region = 'eu'
-timerLength = 5.0
+timerLength = 5
+countdown = 0
     
 def checkWQ():
     now = datetime.datetime.now()
@@ -55,12 +56,32 @@ def stopTimer():
 
 def checkerLoop():
     global timer
+    global countdown
     stopTimer()
     checkWQ()
     timer = threading.Timer(timerLength, checkerLoop)
+    countdown = int(timerLength)
+    countdownLoop()
     timer.start()
 
+def stopCountdown():
+    try:
+        timerCountdown.cancel()
+    except NameError:
+        pass
+
+def countdownLoop():
+    global timerCountdown
+    global countdown
+    decrement = 1
+    stopCountdown()
+    gui.setNextCheckValue(countdown)
+    countdown -= decrement
+    timerCountdown = threading.Timer(decrement, countdownLoop)
+    timerCountdown.start()
+
 def exitApp():
+    stopCountdown()
     stopTimer()
     exit()
 
