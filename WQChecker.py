@@ -30,7 +30,7 @@ def checkWQ():
     # scrap
     found = False
     for qid, qw in quests.items():
-        if str(html).find(str(qid)) > 0:
+        if str(html).find('quest=' + str(qid)) > 0:
             qw.setFound()
             gui.addStatusMsg(str(qid) + ' is up !')
             gui.popupView(str(qid) + ' is up !')
