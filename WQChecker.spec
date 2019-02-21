@@ -3,10 +3,10 @@
 block_cipher = None
 
 
-a = Analysis(['WQChecker.py'],
-             pathex=['E:\\home\\User\\dev\\Python\\SabertronScrapping'],
+a = Analysis(['src\\WQChecker.py'],
+             pathex=['E:\\home\\User\\dev\\Python\\WQChecker'],
              binaries=[],
-             datas=[('icon.jpg', '.')],
+             datas=[('assets/*', 'assets/')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -29,4 +29,4 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=False , icon='icon.ico')
+          console=False , icon='assets\\icon.ico')
