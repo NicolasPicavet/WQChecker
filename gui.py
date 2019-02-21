@@ -27,39 +27,39 @@ def createStatusView(closeCallback, regionCallback):
     global statusText
 
     statusWindow = tk.Tk()
-    statusWindow.wm_title('Sabertron Checker')
+    statusWindow.wm_title('World Quests Checker')
     statusWindow.tk.call('wm', 'iconphoto', statusWindow._w, ImageTk.PhotoImage(Image.open(getBundlePath('icon.jpg'))))
 
-    mainFrame = tk.Frame(statusWindow, height=500, width=250)
+    mainFrame = tk.Frame(statusWindow)
     mainFrame.pack(fill='both', expand=True)
-    mainFrame.grid_propagate(False)
-    mainFrame.grid_rowconfigure(0, weight=1)
-    mainFrame.grid_columnconfigure(0, weight=1)
 
-    radioFrame = tk.Frame(mainFrame, height=500, width=250)
-    radioFrame.grid(row=0, column=0)
-    radioFrame.grid_propagate(False)
-    radioFrame.grid_rowconfigure(0, weight=1)
+    radioFrame = tk.Frame(mainFrame)
+    radioFrame.grid(row=0, column=0, sticky='we', padx=2, pady=2)
     radioFrame.grid_columnconfigure(0, weight=1)
+
+    tk.Label(radioFrame, text="Region", anchor=tk.W).grid(row=0, column=0, sticky=tk.W)
 
     region = None
     naRadio = tk.Radiobutton(radioFrame, text="NA", variable=region, value='na', command=lambda:regionCallback('na'))
-    naRadio.grid(row=0, column=1)
+    naRadio.grid(row=0, column=2)
     euRadio = tk.Radiobutton(radioFrame, text="EU", variable=region, value='eu', command=lambda:regionCallback('eu'))
-    euRadio.grid(row=0, column=0)
+    euRadio.grid(row=0, column=1)
     euRadio.select()
 
     statusText = tk.Text(mainFrame, font=('Helvetica', 10))
-    statusText.grid(row=1, column=0, sticky='nsew', padx=2, pady=2)
+    statusText.grid(row=1, column=0, padx=2, pady=2)
+    statusText.config(state=tk.DISABLED)
 
     statusTextScrollBar = tk.Scrollbar(mainFrame, command=statusText.yview)
     statusText['yscrollcommand'] = statusTextScrollBar.set
-    statusTextScrollBar.grid(row=1, column=1, sticky='nsew')
+    statusTextScrollBar.grid(row=1, column=1, sticky='ns')
 
     closeButton = tk.Button(mainFrame, text='Close', command=closeCallback)
-    closeButton.grid(row=2, column=0, sticky='nsew')
+    closeButton.grid(row=2, column=0, padx=2, pady=2)
 
     return statusWindow
 
 def addStatusMsg(msg):
+    statusText.config(state=tk.NORMAL)
     statusText.insert(tk.END, msg + '\n')
+    statusText.config(state=tk.DISABLED)
