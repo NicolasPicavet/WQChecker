@@ -1,5 +1,5 @@
-import requester
-import gui
+import net.requester as requester
+import gui.gui as gui
 
 import threading
 import datetime
