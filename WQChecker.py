@@ -9,6 +9,7 @@ import datetime
 url = 'https://www.wowhead.com/world-quests/bfa/'
 quests = [51974, 51976, 51977, 51978]
 region = 'eu'
+timerLength = 5.0
     
 def checkWQ():
     gui.addStatusMsg('=== Is a Sabertron up ? === in ' + region)
@@ -51,7 +52,7 @@ def stopChecker():
 def checkerLoop():
     global timer
     checkWQ()
-    timer = threading.Timer(5.0, checkerLoop)
+    timer = threading.Timer(timerLength, checkerLoop)
     timer.start()
 
 
