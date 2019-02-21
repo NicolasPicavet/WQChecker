@@ -30,7 +30,7 @@ def createStatusView(quests, closeCallback, regionCallback, checkNowCallback, qu
 
     statusWindow = tk.Tk()
     statusWindow.wm_title('World Quests Checker')
-    statusWindow.tk.call('wm', 'iconphoto', statusWindow._w, ImageTk.PhotoImage(Image.open(getBundlePath('icon.jpg'))))
+    statusWindow.tk.call('wm', 'iconphoto', statusWindow._w, ImageTk.PhotoImage(Image.open(getBundlePath('assets/icon.jpg'))))
 
     mainFrame = tk.Frame(statusWindow)
     mainFrame.pack(fill='both', expand=True)
@@ -78,7 +78,7 @@ def createStatusView(quests, closeCallback, regionCallback, checkNowCallback, qu
 
     def buildQuestWidget(q):
         qw = questWidget()
-        qw.buildWidget(questsFrame=questsFrame, questCallback=questRegisterCallback, questId=q)
+        qw.buildWidget(questsFrame=questsFrame, questCallback=questRegisterCallback, questId=q, questName='quest name')
         return qw
     questsWidgets = []
     for qid in quests.keys():
@@ -145,13 +145,12 @@ def addStatusMsg(msg):
 
 class questWidget:
 
-    questStatusLabel = None
-    status = None
+    wqIconLabel = None
     questId = None
     widgetFrame = None
     questCallback = None
 
-    def buildWidget(self, questsFrame, questCallback, questId):
+    def buildWidget(self, questsFrame, questCallback, questId, questName):
         widgetFrame = tk.Frame(questsFrame)
         widgetFrame.pack(fill='both', expand=True)
 
@@ -164,10 +163,12 @@ class questWidget:
         questEntry = tk.Entry(widgetFrame, textvariable=questVar)
         questEntry.grid(row=0, column=0, sticky=tk.W)
 
-        self.questStatusLabel = tk.Label(widgetFrame, text=self.status)
-        self.questStatusLabel.grid(row=0, column=1)
-
+        self.wqIconLabel = tk.Label(widgetFrame)
+        self.wqIconLabel.grid(row=0, column=1)
         self.setUnchecked()
+
+        questStatusLabel = tk.Label(widgetFrame, text=questName)
+        questStatusLabel.grid(row=0, column=2)
 
     def destroyWidget(self):
         self.widgetFrame.grid_forget()
@@ -177,16 +178,15 @@ class questWidget:
         self.questCallback()
 
     def setFound(self):
-        self.status = 'F'
-        self.updateStatus()
+        self.updateStatus('assets/found.png')
 
     def setUnchecked(self):
-        self.status = '?'
-        self.updateStatus()
+        self.updateStatus('assets/unchecked.png')
 
     def setUnfound(self):
-        self.status = 'N'
-        self.updateStatus()
+        self.updateStatus('assets/unfound.png')
 
-    def updateStatus(self):
-        self.questStatusLabel.config(text=self.status)
+    def updateStatus(self, icon):
+        statusIcon = ImageTk.PhotoImage(Image.open(getBundlePath(icon)))
+        self.wqIconLabel.config(image=statusIcon)
+        self.wqIconLabel.image = statusIcon # http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
