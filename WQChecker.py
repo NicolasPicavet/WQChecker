@@ -7,7 +7,7 @@ import threading
 import datetime
 
 url = 'https://www.wowhead.com/world-quests/bfa/'
-quests = [51974, 51976, 51977, 51978]
+quests = {51974:None, 51976:None, 51977:None, 51978:None}
 region = 'eu'
 timerLength = 5.0
     
@@ -29,11 +29,14 @@ def checkWQ():
 
     # scrap
     found = False
-    for q in quests:
-        if str(html).find(str(q)) > 0:
-            gui.addStatusMsg(str(q) + ' is up !')
-            gui.popupView(str(q) + ' is up !')
+    for qid, qw in quests.items():
+        if str(html).find(str(qid)) > 0:
+            qw.setFound()
+            gui.addStatusMsg(str(qid) + ' is up !')
+            gui.popupView(str(qid) + ' is up !')
             found = True
+        else:
+            qw.setUnfound()
     if not found:
         gui.addStatusMsg('No Sabertron are up :(')
 
@@ -61,9 +64,14 @@ def exitApp():
     stopTimer()
     exit()
 
+def registerQuests():
+    quests.clear()
+    for qw in gui.questsWidgets:
+        quests[qw.questId] = qw
 
 
-statusView = gui.createStatusView(closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ)
+
+statusView = gui.createStatusView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests)
 
 checkerLoop()
 
