@@ -38,6 +38,12 @@ def checkWQ():
 
     gui.addStatusMsg('')
 
+def changeRegion(newRegion):
+    global region
+    timer.cancel()
+    region = newRegion
+    checkerLoop()
+
 def stopChecker():
     timer.cancel()
     exit()
@@ -50,7 +56,7 @@ def checkerLoop():
 
 
 
-statusView = gui.createStatusView(stopChecker, region)
+statusView = gui.createStatusView(closeCallback=stopChecker, regionCallback=changeRegion)
 
 checkerLoop()
 

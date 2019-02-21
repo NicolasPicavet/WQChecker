@@ -23,7 +23,7 @@ def popupView(msg):
     B1.pack()
     popupWindow.mainloop()
 
-def createStatusView(closeCommand, region):
+def createStatusView(closeCallback, regionCallback):
     global statusText
 
     statusWindow = tk.Tk()
@@ -42,14 +42,12 @@ def createStatusView(closeCommand, region):
     radioFrame.grid_rowconfigure(0, weight=1)
     radioFrame.grid_columnconfigure(0, weight=1)
 
-    # naRadio = tk.Radiobutton(radioFrame, text="NA", variable=region, value='na')
-    # naRadio.grid(row=0, column=1)
-    # euRadio = tk.Radiobutton(radioFrame, text="EU", variable=region, value='eu')
-    # euRadio.grid(row=0, column=0)
-    # if 'eu' in region:
-    #     euRadio.select()
-    # else:
-    #     naRadio.select()
+    region = None
+    naRadio = tk.Radiobutton(radioFrame, text="NA", variable=region, value='na', command=lambda:regionCallback('na'))
+    naRadio.grid(row=0, column=1)
+    euRadio = tk.Radiobutton(radioFrame, text="EU", variable=region, value='eu', command=lambda:regionCallback('eu'))
+    euRadio.grid(row=0, column=0)
+    euRadio.select()
 
     statusText = tk.Text(mainFrame, font=('Helvetica', 10))
     statusText.grid(row=1, column=0, sticky='nsew', padx=2, pady=2)
@@ -58,7 +56,7 @@ def createStatusView(closeCommand, region):
     statusText['yscrollcommand'] = statusTextScrollBar.set
     statusTextScrollBar.grid(row=1, column=1, sticky='nsew')
 
-    closeButton = tk.Button(mainFrame, text='Close', command=closeCommand)
+    closeButton = tk.Button(mainFrame, text='Close', command=closeCallback)
     closeButton.grid(row=2, column=0, sticky='nsew')
 
     return statusWindow
