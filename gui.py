@@ -25,6 +25,7 @@ def popupView(msg):
 
 def createStatusView(closeCallback, regionCallback, checkNowCallback):
     global statusText
+    global lastCheckLabel
 
     statusWindow = tk.Tk()
     statusWindow.wm_title('World Quests Checker')
@@ -48,29 +49,43 @@ def createStatusView(closeCallback, regionCallback, checkNowCallback):
     euRadio.grid(row=0, column=1)
     euRadio.select()
 
+    # Last Check
+
+    lastCheckFrame = tk.Frame(mainFrame)
+    lastCheckFrame.grid(row=1, column=0, sticky='we', padx=2, pady=2)
+    lastCheckFrame.grid_columnconfigure(0, weight=1)
+
+    tk.Label(lastCheckFrame, text="Last check", anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
+    lastCheckLabel = tk.Label(lastCheckFrame, text='lastCheckValue', anchor=tk.W)
+    lastCheckLabel.grid(row=1, column=1)
+
     # Status text
 
     statusFrame = tk.Frame(mainFrame)
-    statusFrame.grid(row=1, column=0, sticky='we', padx=2, pady=2)
+    statusFrame.grid(row=2, column=0, sticky='we', padx=2, pady=2)
     statusFrame.grid_columnconfigure(0, weight=1)
 
     statusText = tk.Text(statusFrame, font=('Helvetica', 10))
-    statusText.grid(row=0, column=0, padx=2, pady=2)
+    statusText.grid(row=1, column=0, padx=2, pady=2)
     statusText.config(state=tk.DISABLED)
 
     statusTextScrollBar = tk.Scrollbar(statusFrame, command=statusText.yview)
     statusText['yscrollcommand'] = statusTextScrollBar.set
-    statusTextScrollBar.grid(row=0, column=1, sticky='ns')
+    statusTextScrollBar.grid(row=1, column=1, sticky='ns')
 
     # Buttons
 
     buttonsFrame = tk.Frame(mainFrame)
-    buttonsFrame.grid(row=2, column=0, sticky='we', padx=2, pady=2)
+    buttonsFrame.grid(row=3, column=0, sticky='we', padx=2, pady=2)
 
     tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).grid(row=0, column=0, padx=2, pady=2)
     tk.Button(buttonsFrame, text='Close', command=closeCallback).grid(row=0, column=1, padx=2, pady=2)
 
     return statusWindow
+
+def setLastCheckValue(value):
+    global lastCheckLabel
+    lastCheckLabel.config(text=value)
 
 def addStatusMsg(msg):
     statusText.config(state=tk.NORMAL)

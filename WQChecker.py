@@ -12,8 +12,8 @@ region = 'eu'
 timerLength = 5.0
     
 def checkWQ():
-    gui.addStatusMsg('=== Is a Sabertron up ? === in ' + region)
     now = datetime.datetime.now()
+    gui.setLastCheckValue(now.strftime("%Y-%m-%d %H:%M:%S"))
     gui.addStatusMsg(now.strftime("%Y-%m-%d %H:%M:%S"))
 
     # request
