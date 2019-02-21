@@ -78,7 +78,7 @@ def createStatusView(quests, closeCallback, regionCallback, checkNowCallback, qu
 
     def buildQuestWidget(q):
         qw = questWidget()
-        qw.buildWidget(questsFrame=questsFrame, questCallback=questRegisterCallback, questId=q, questName='quest name')
+        qw.buildWidget(questsFrame=questsFrame, questCallback=questRegisterCallback, questId=q)
         return qw
     questsWidgets = []
     for qid in quests.keys():
@@ -147,10 +147,11 @@ class questWidget:
 
     wqIconLabel = None
     questId = None
+    questStatusLabel = None
     widgetFrame = None
     questCallback = None
 
-    def buildWidget(self, questsFrame, questCallback, questId, questName):
+    def buildWidget(self, questsFrame, questCallback, questId):
         widgetFrame = tk.Frame(questsFrame)
         widgetFrame.pack(fill='both', expand=True)
 
@@ -167,8 +168,8 @@ class questWidget:
         self.wqIconLabel.grid(row=0, column=1)
         self.setUnchecked()
 
-        questStatusLabel = tk.Label(widgetFrame, text=questName)
-        questStatusLabel.grid(row=0, column=2)
+        self.questNameLabel = tk.Label(widgetFrame, text='...')
+        self.questNameLabel.grid(row=0, column=2)
 
     def destroyWidget(self):
         self.widgetFrame.grid_forget()
@@ -190,3 +191,6 @@ class questWidget:
         statusIcon = ImageTk.PhotoImage(Image.open(getBundlePath(icon)))
         self.wqIconLabel.config(image=statusIcon)
         self.wqIconLabel.image = statusIcon # http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
+
+    def setQuestName(self, questName):
+        self.questNameLabel.config(text=questName)

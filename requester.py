@@ -1,9 +1,26 @@
 # from https://realpython.com/python-web-scraping-practical-introduction/
 
-from requests import get
+import requests
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
+
+def getWorldQuestsHtml(url, dump=False):
+    return get(url, dump)
+
+def getQuestName(url, dump=False):
+    try:
+        return next(iter(get(url, dump).select('h1') or []), None).text
+    except AttributeError:
+        return '!Quest name not found!'
+
+def get(url, dump):
+    html = BeautifulSoup(simple_get(url), 'html.parser')
+    if dump:
+        file = open('dump.html','w+')
+        file.write(str(html))
+        file.close()
+    return html
 
 def simple_get(url):
     """
@@ -12,7 +29,7 @@ def simple_get(url):
     text content, otherwise return None.
     """
     try:
-        with get(url, stream=True) as resp:
+        with requests.get(url, stream=True) as resp:
             if is_good_response(resp):
                 return resp.content
             else:

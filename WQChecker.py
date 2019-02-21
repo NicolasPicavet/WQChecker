@@ -1,12 +1,11 @@
-from req import simple_get
+import requester
 import gui
-
-from bs4 import BeautifulSoup
 
 import threading
 import datetime
 
-url = 'https://www.wowhead.com/world-quests/bfa/'
+worldQuestsUrl = 'https://www.wowhead.com/world-quests/bfa/'
+questUrl= 'https://www.wowhead.com/quest='
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
 region = 'eu'
 timerLength = 5
@@ -17,31 +16,14 @@ def checkWQ():
     gui.setLastCheckValue(now.strftime("%Y-%m-%d %H:%M:%S"))
     gui.addStatusMsg(now.strftime("%Y-%m-%d %H:%M:%S"))
 
-    # request
-    raw_html = simple_get(url + region)
+    html = requester.getWorldQuestsHtml(worldQuestsUrl + region)
 
-    # parse
-    html = BeautifulSoup(raw_html, 'html.parser')
-
-    # dump
-    file = open('htmldump.html','w+')
-    file.write(str(html))
-    file.close()
-
-    # scrap
-    found = False
     for qid, qw in quests.items():
         if str(html).find('quest=' + str(qid)) > 0:
             qw.setFound()
-            gui.addStatusMsg(str(qid) + ' is up !')
             gui.popupView(str(qid) + ' is up !')
-            found = True
         else:
             qw.setUnfound()
-    if not found:
-        gui.addStatusMsg('No Sabertron are up :(')
-
-    gui.addStatusMsg('')
 
 def changeRegion(newRegion):
     global region
@@ -86,9 +68,13 @@ def exitApp():
     exit()
 
 def registerQuests():
+    def setQuestNameThread(questWidget):
+        questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.questId)))
+        return
     quests.clear()
     for qw in gui.questsWidgets:
         quests[qw.questId] = qw
+        threading.Thread(target=setQuestNameThread, args=(qw,)).start()
 
 
 
