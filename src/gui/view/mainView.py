@@ -4,6 +4,8 @@ import tkinter as tk
 import utils
 from gui.widget.questWidget import questWidget
 
+def hr(parentFrame):
+    tk.Frame(parentFrame, height=1, background='#BBB').pack(fill=tk.BOTH, expand=True, padx=10, pady=6)
 
 class mainView:
 
@@ -28,7 +30,7 @@ class mainView:
         mainFrame = tk.Frame(self.root)
         mainFrame.pack(fill=tk.BOTH, expand=True)
 
-        # Radio buttons
+        # Region
 
         radioFrame = tk.Frame(mainFrame)
         radioFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
@@ -43,6 +45,9 @@ class mainView:
         euRadio.grid(row=0, column=1)
         euRadio.select()
 
+        # Horizontal separation
+        hr(mainFrame)
+
         # Last Check
 
         lastCheckFrame = tk.Frame(mainFrame)
@@ -53,21 +58,6 @@ class mainView:
         self.lastCheckLabel = tk.Label(lastCheckFrame, text='lastCheckValue', anchor=tk.W)
         self.lastCheckLabel.grid(row=1, column=1)
 
-        # Interval
-
-        intervalFrame = tk.Frame(mainFrame)
-        intervalFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        intervalFrame.grid_columnconfigure(0, weight=1)
-
-        tk.Label(intervalFrame, text='Interval', anchor=tk.W).grid(row=0, column=0, sticky=tk.W)
-
-        intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
-        intervalScale.set(3)
-        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue)))
-        intervalScale.grid(row=0, column=1)
-        
-        tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=2, sticky='n')
-
         # Next Check
 
         nextCheckFrame = tk.Frame(mainFrame)
@@ -77,6 +67,24 @@ class mainView:
         tk.Label(nextCheckFrame, text='Next check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
         self.nextCheckLabel = tk.Label(nextCheckFrame, text='nextCheckValue', anchor=tk.W)
         self.nextCheckLabel.grid(row=1, column=1)
+
+        # Interval
+
+        intervalFrame = tk.Frame(mainFrame)
+        intervalFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        intervalFrame.grid_columnconfigure(0, weight=1)
+
+        tk.Label(intervalFrame, text='Interval', anchor=tk.W).grid(row=0, column=0, sticky=tk.W + tk.N)
+
+        intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
+        intervalScale.set(3)
+        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue)))
+        intervalScale.grid(row=0, column=1)
+        
+        tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=2, sticky=tk.N)
+
+        # Horizontal separation
+        hr(mainFrame)
 
         # Quests subscriptions
 
@@ -117,6 +125,9 @@ class mainView:
             newQuestEntry.delete(0, tk.END)
 
         tk.Button(newQuestFrame, image=utils.addIcon, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
+
+        # Horizontal separation
+        hr(mainFrame)
 
         # Buttons
 
