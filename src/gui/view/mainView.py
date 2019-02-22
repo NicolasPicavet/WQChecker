@@ -1,23 +1,28 @@
 import time
 import tkinter as tk
-from PIL import ImageTk, Image
 
-from gui.utils import getAssetPath
+import gui.utils as utils
 from gui.widget.questWidget import questWidget
 
+
 class mainView:
+
+    root = tk.Tk()
 
     statusText = None
     lastCheckLabel = None
     nextCheckLabel = None
     questsWidgets = []
 
-    def createStatusView(self, quests, closeCallback, regionCallback, checkNowCallback, questRegisterCallback):
-        statusWindow = tk.Tk()
-        statusWindow.wm_title('World Quests Checker')
-        statusWindow.tk.call('wm', 'iconphoto', statusWindow._w, ImageTk.PhotoImage(Image.open(getAssetPath('icon.jpg'))))
+    def __init__(self):
+        utils.loadAssets()
 
-        mainFrame = tk.Frame(statusWindow)
+    def createStatusView(self, quests, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback):
+
+        self.root.wm_title('World Quests Checker')
+        self.root.tk.call('wm', 'iconphoto', self.root._w, utils.favicon)
+
+        mainFrame = tk.Frame(self.root)
         mainFrame.pack(fill='both', expand=True)
 
         # Radio buttons
@@ -63,8 +68,17 @@ class mainView:
 
         def buildQuestWidget(q):
             qw = questWidget()
-            qw.buildWidget(questsFrame=questsFrame, questCallback=questRegisterCallback, questId=q)
+
+            def removeQuestWidgetThenCallback(questWidget):
+                try:
+                    self.questsWidgets.remove(questWidget)
+                    questUnregisterCallback(questWidget.id)
+                except ValueError:
+                    print('Remove questWidget ' + str(questWidget) + ' failed')
+
+            qw.buildWidget(questsFrame=questsFrame, questCallback=questRegisterCallback, deleteCallback=removeQuestWidgetThenCallback, questId=q)
             return qw
+            
         self.questsWidgets = []
         for qid in quests.keys():
             self.questsWidgets.append(buildQuestWidget(qid))
@@ -74,7 +88,7 @@ class mainView:
 
         newQuestFrame = tk.Frame(mainFrame)
         newQuestFrame.grid(row=4, column=0, sticky='we', padx=2, pady=2)
-        newQuestFrame.grid_columnconfigure(0, weight=1)
+        newQuestFrame.grid_columnconfigure(1, weight=1)
 
         newQuestEntry = tk.Entry(newQuestFrame)
         newQuestEntry.grid(row=0, column=0, sticky='w')
@@ -84,7 +98,7 @@ class mainView:
             questRegisterCallback()
             newQuestEntry.delete(0, tk.END)
 
-        tk.Button(newQuestFrame, text='Subscribe', command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2)
+        tk.Button(newQuestFrame, image=utils.addIcon, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
 
         # Buttons
 
@@ -94,7 +108,7 @@ class mainView:
         tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).grid(row=0, column=0, padx=2, pady=2)
         tk.Button(buttonsFrame, text='Close', command=closeCallback).grid(row=0, column=1, padx=2, pady=2)
 
-        return statusWindow
+        return self.root
 
     def setLastCheckValue(self, value):
         self.lastCheckLabel.config(text=value)

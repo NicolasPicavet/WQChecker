@@ -71,16 +71,24 @@ def exitApp():
 
 def registerQuests():
     def setQuestNameThread(questWidget):
-        questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.questId)))
+        questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.id)))
         return
     quests.clear()
     for qw in gui.mainView.questsWidgets:
-        quests[qw.questId] = qw
+        quests[qw.id] = qw
         threading.Thread(target=setQuestNameThread, args=(qw,)).start()
 
+def unregisterQuest(questId):
+    try:
+        quests.pop(questId)
+    except KeyError:
+        print('Unregister quest ' + str(questId) + ' failed')
+    else:
+        print('Unregistered quest ' + str(questId))
 
 
-statusView = gui.mainView.createStatusView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests)
+
+statusView = gui.mainView.createStatusView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest)
 
 checkerLoop()
 

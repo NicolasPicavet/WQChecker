@@ -1,57 +1,62 @@
 import tkinter as tk
 from PIL import ImageTk, Image
 
-from gui.utils import getAssetPath
+import gui.utils as utils
 
 
 class questWidget:
 
     wqIconLabel = None
-    questId = None
+    id = None
     questStatusLabel = None
     widgetFrame = None
+
     questCallback = None
 
-    def buildWidget(self, questsFrame, questCallback, questId):
-        widgetFrame = tk.Frame(questsFrame)
-        widgetFrame.pack(fill='both', expand=True)
+    def buildWidget(self, questsFrame, questCallback, deleteCallback, questId):
+        self.questCallback = questCallback
 
-        self.questId = questId
+        self.widgetFrame = tk.Frame(questsFrame)
+        self.widgetFrame.pack(fill='both', expand=True)
+        self.widgetFrame.grid_columnconfigure(2, weight=1)
+
+        self.id = questId
         questVar = tk.StringVar()
         questVar.set(questId)
-        self.questCallback = questCallback
         questVar.trace('w', lambda name, index, mode, questVar=questVar: self.storeNewValueThenCallback(questVar.get()))
 
-        questEntry = tk.Entry(widgetFrame, textvariable=questVar)
+        questEntry = tk.Entry(self.widgetFrame, textvariable=questVar)
         questEntry.grid(row=0, column=0, sticky=tk.W)
 
-        self.wqIconLabel = tk.Label(widgetFrame)
+        self.wqIconLabel = tk.Label(self.widgetFrame)
         self.wqIconLabel.grid(row=0, column=1)
         self.setUnchecked()
 
-        self.questNameLabel = tk.Label(widgetFrame, text='...')
+        self.questNameLabel = tk.Label(self.widgetFrame, text='...')
         self.questNameLabel.grid(row=0, column=2)
 
-    def destroyWidget(self):
-        self.widgetFrame.grid_forget()
+        deleteButton = tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback))
+        deleteButton.grid(row=0, column=3)
+
+    def forgetWidgetThenCallback(self, deleteCallback):
+        self.widgetFrame.pack_forget()
+        deleteCallback(self)
 
     def storeNewValueThenCallback(self, newQuestId):
-        self.questId = newQuestId
+        self.id = newQuestId
         self.questCallback()
 
     def setFound(self):
-        self.updateStatus('found.png')
+        self.updateStatus(utils.foundIcon)
 
     def setUnchecked(self):
-        self.updateStatus('unchecked.png')
+        self.updateStatus(utils.uncheckedIcon)
 
     def setUnfound(self):
-        self.updateStatus('unfound.png')
+        self.updateStatus(utils.unfoundIcon)
 
     def updateStatus(self, icon):
-        statusIcon = ImageTk.PhotoImage(Image.open(getAssetPath(icon)))
-        self.wqIconLabel.config(image=statusIcon)
-        self.wqIconLabel.image = statusIcon # http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
+        self.wqIconLabel.config(image=icon)
 
     def setQuestName(self, questName):
         self.questNameLabel.config(text=questName)
