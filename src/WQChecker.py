@@ -13,8 +13,8 @@ countdown = 0
     
 def checkWQ():
     now = datetime.datetime.now()
-    gui.setLastCheckValue(now.strftime("%Y-%m-%d %H:%M:%S"))
-    gui.addStatusMsg(now.strftime("%Y-%m-%d %H:%M:%S"))
+    gui.mainView.setLastCheckValue(now.strftime("%Y-%m-%d %H:%M:%S"))
+    gui.mainView.addStatusMsg(now.strftime("%Y-%m-%d %H:%M:%S"))
 
     html = requester.getWorldQuestsHtml(worldQuestsUrl + region)
 
@@ -57,7 +57,7 @@ def countdownLoop():
     global countdown
     decrement = 1
     stopCountdown()
-    gui.setNextCheckValue(countdown)
+    gui.mainView.setNextCheckValue(countdown)
     countdown -= decrement
     timerCountdown = threading.Timer(decrement, countdownLoop)
     timerCountdown.start()
@@ -72,13 +72,13 @@ def registerQuests():
         questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.questId)))
         return
     quests.clear()
-    for qw in gui.questsWidgets:
+    for qw in gui.mainView.questsWidgets:
         quests[qw.questId] = qw
         threading.Thread(target=setQuestNameThread, args=(qw,)).start()
 
 
 
-statusView = gui.createStatusView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests)
+statusView = gui.mainView.createStatusView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests)
 
 checkerLoop()
 
