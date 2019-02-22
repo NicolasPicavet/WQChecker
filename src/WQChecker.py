@@ -20,13 +20,17 @@ def checkWQ():
 
     html = requester.getWorldQuestsHtml(worldQuestsUrl + region)
 
-    for qid, qw in quests.items():
-        if str(html).find('"url":"\/quest=' + str(qid) + '","') > 0:
-            qw.setFound()
-            gui.popupView(str(qid) + ' is up !')
-        else:
-            qw.setUnfound()
-
+    try:
+        for qid, qw in quests.items():
+            if str(html).find('"url":"\/quest=' + str(qid) + '","') > 0:
+                qw.setFound()
+                gui.popupView(str(qid) + ' is up !')
+            else:
+                qw.setUnfound()
+    except RuntimeError as e:
+        print(e.__str__)
+        checkWQ()
+    
 def changeRegion(newRegion):
     global region
     region = newRegion
@@ -71,8 +75,10 @@ def exitApp():
 
 def registerQuests():
     def setQuestNameThread(questWidget):
-        questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.id)))
-        return
+        if questWidget.id != '':
+            questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.id)))
+        else:
+            questWidget.setQuestName('...')
     quests.clear()
     for qw in gui.mainView.questsWidgets:
         quests[qw.id] = qw

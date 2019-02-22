@@ -32,7 +32,7 @@ class questWidget:
         self.questIconLabel.grid(row=0, column=1)
         self.setUnchecked()
 
-        self.questNameLabel = tk.Label(self.widgetFrame, text='...')
+        self.questNameLabel = tk.Label(self.widgetFrame)
         self.questNameLabel.grid(row=0, column=2)
 
         deleteButton = tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback))
