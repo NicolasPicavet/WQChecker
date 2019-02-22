@@ -100,8 +100,8 @@ def unregisterQuest(questId):
 
 
 
-statusView = gui.mainView.createStatusView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest)
+mainView = gui.mainView.buildMainView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest)
 
 checkerLoop()
 
-statusView.mainloop()
+mainView.mainloop()

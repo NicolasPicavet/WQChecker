@@ -17,13 +17,15 @@ class mainView:
     def __init__(self):
         utils.loadAssets()
 
-    def createStatusView(self, quests, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback):
+    def buildMainView(self, quests, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback):
 
         self.root.wm_title('World Quests Checker')
         self.root.tk.call('wm', 'iconphoto', self.root._w, utils.favicon)
+        self.root.resizable(False, False)
+        self.root.minsize(300, 0)
 
         mainFrame = tk.Frame(self.root)
-        mainFrame.pack(fill='both', expand=True)
+        mainFrame.pack(fill=tk.BOTH, expand=True)
 
         # Radio buttons
 
