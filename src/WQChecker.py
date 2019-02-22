@@ -5,6 +5,7 @@ import gui.gui as gui
 
 import threading
 import datetime
+import sys
 
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
 region = 'eu'
@@ -70,7 +71,7 @@ def countdownLoop():
 def exitApp():
     stopCountdown()
     stopTimer()
-    exit()
+    sys.exit()
 
 def registerQuests():
     def setQuestNameThread(questWidget):
@@ -79,6 +80,7 @@ def registerQuests():
         else:
             questWidget.resetQuestName()
             questWidget.setUnchecked()
+        return # close thread
     quests.clear()
     for qw in gui.mainView.questsWidgets:
         try:
@@ -88,7 +90,9 @@ def registerQuests():
             qw.reset()
         else:
             quests[qid] = qw
-            threading.Thread(target=setQuestNameThread, args=(qw,)).start()
+            t = threading.Thread(target=setQuestNameThread, args=(qw,))
+            t.setDaemon(True)
+            t.start()
 
 def unregisterQuest(questId):
     try:

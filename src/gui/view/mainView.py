@@ -23,6 +23,7 @@ class mainView:
         self.root.tk.call('wm', 'iconphoto', self.root._w, utils.favicon)
         self.root.resizable(False, False)
         self.root.minsize(300, 0)
+        self.root.protocol("WM_DELETE_WINDOW", closeCallback)
 
         mainFrame = tk.Frame(self.root)
         mainFrame.pack(fill=tk.BOTH, expand=True)
