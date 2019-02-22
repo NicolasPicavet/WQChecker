@@ -1,7 +1,9 @@
 import tkinter as tk
 from PIL import ImageTk, Image
+import webbrowser
 
 import gui.utils as utils
+import net.requester as requester
 
 
 class questWidget:
@@ -34,10 +36,16 @@ class questWidget:
         self.questNameLabel = tk.Label(self.widgetFrame, anchor=tk.W)
         self.questNameLabel.grid(row=0, column=2, sticky=tk.W)
 
+        webLink =  tk.Button(self.widgetFrame, image=utils.wowheadIcon, command=self._webLinkCallback)
+        webLink.grid(row=0, column=3)
+
         deleteButton = tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback))
-        deleteButton.grid(row=0, column=3)
+        deleteButton.grid(row=0, column=4)
         
         self.reset()
+
+    def _webLinkCallback(self):
+        webbrowser.open_new(requester.getQuestUrl(self.id))
 
     def forgetWidgetThenCallback(self, deleteCallback):
         self.widgetFrame.pack_forget()

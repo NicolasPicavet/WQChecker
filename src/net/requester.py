@@ -8,24 +8,27 @@ from bs4 import BeautifulSoup
 WORLD_QUEST_URL = 'https://www.wowhead.com/world-quests/bfa/'
 QUEST_URL= 'https://www.wowhead.com/quest='
 
+def getQuestUrl(questId):
+    return QUEST_URL + str(questId)
+
 def getWorldQuestsHtml(region, dump=False):
-    return get(WORLD_QUEST_URL + region, dump)
+    return _get(WORLD_QUEST_URL + region, dump)
 
 def getQuestName(questId, dump=False):
     try:
-        return next(iter(get(QUEST_URL + questId, dump).select('h1') or []), None).text
+        return next(iter(_get(getQuestUrl(questId), dump).select('h1') or []), None).text
     except AttributeError:
         return '!Quest name not found!'
 
-def get(url, dump):
-    html = BeautifulSoup(simple_get(url), 'html.parser')
+def _get(url, dump):
+    html = BeautifulSoup(_simple_get(url), 'html.parser')
     if dump:
         file = open('dump.html','w+')
         file.write(str(html))
         file.close()
     return html
 
-def simple_get(url):
+def _simple_get(url):
     """
     Attempts to get the content at `url` by making an HTTP GET request.
     If the content-type of response is some kind of HTML/XML, return the

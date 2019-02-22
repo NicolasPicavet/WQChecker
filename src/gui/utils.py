@@ -17,16 +17,20 @@ def getBundlePath(file):
         return file
 
 def loadAssets():
-    global addIcon
-    global deleteIcon
-    global foundIcon
-    global unfoundIcon
-    global uncheckedIcon
     global favicon
-
-    addIcon = getAsset('add.png')
-    deleteIcon = getAsset('delete.png')
-    foundIcon = getAsset('found.png')
-    unfoundIcon = getAsset('unfound.png')
-    uncheckedIcon = getAsset('unchecked.png')
     favicon = getAsset('favicon.png')
+
+    global wowheadIcon
+    wowheadIcon = getAsset('wowhead.png')
+
+    global addIcon
+    addIcon = getAsset('add.png')
+    global deleteIcon
+    deleteIcon = getAsset('delete.png')
+
+    global foundIcon
+    foundIcon = getAsset('found.png')
+    global unfoundIcon
+    unfoundIcon = getAsset('unfound.png')
+    global uncheckedIcon
+    uncheckedIcon = getAsset('unchecked.png')

@@ -76,7 +76,7 @@ def exitApp():
 def registerQuests():
     def setQuestNameThread(questWidget):
         if questWidget.id != '':
-            questWidget.setQuestName(requester.getQuestName(str(questWidget.id)))
+            questWidget.setQuestName(requester.getQuestName(questWidget.id))
         else:
             questWidget.resetQuestName()
             questWidget.setUnchecked()
