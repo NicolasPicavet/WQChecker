@@ -36,11 +36,9 @@ class questWidget:
         self.questNameLabel = tk.Label(self.widgetFrame, anchor=tk.W)
         self.questNameLabel.grid(row=0, column=2, sticky=tk.W)
 
-        webLink =  tk.Button(self.widgetFrame, image=utils.wowheadIcon, command=self._webLinkCallback)
-        webLink.grid(row=0, column=3)
+        tk.Button(self.widgetFrame, image=utils.wowheadIcon, command=self._webLinkCallback).grid(row=0, column=3, padx=2)
 
-        deleteButton = tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback))
-        deleteButton.grid(row=0, column=4)
+        tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback)).grid(row=0, column=4, padx=2)
         
         self.reset()
 

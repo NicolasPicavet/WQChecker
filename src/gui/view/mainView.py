@@ -60,10 +60,13 @@ class mainView:
         intervalFrame.grid_columnconfigure(0, weight=1)
 
         tk.Label(intervalFrame, text='Interval', anchor=tk.W).grid(row=0, column=0, sticky=tk.W)
+
         intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
         intervalScale.set(3)
         intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue)))
         intervalScale.grid(row=0, column=1)
+        
+        tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=2, sticky='n')
 
         # Next Check
 
@@ -106,7 +109,7 @@ class mainView:
         newQuestFrame.grid_columnconfigure(1, weight=1)
 
         newQuestEntry = tk.Entry(newQuestFrame, width=utils.QUEST_ID_ENTRY_WIDTH)
-        newQuestEntry.grid(row=0, column=0, sticky='w')
+        newQuestEntry.grid(row=0, column=0, sticky=tk.W)
 
         def newQuestSubscription():
             self.questsWidgets.append(buildQuestWidget(newQuestEntry.get()))
@@ -118,10 +121,9 @@ class mainView:
         # Buttons
 
         buttonsFrame = tk.Frame(mainFrame)
-        buttonsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        buttonsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=5)
 
-        tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).grid(row=0, column=0, padx=2, pady=2)
-        tk.Button(buttonsFrame, text='Close', command=closeCallback).grid(row=0, column=1, padx=2, pady=2)
+        tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).pack(padx=2, anchor=tk.E)
 
         return self.root
 
