@@ -86,24 +86,10 @@ class mainView:
 
         tk.Button(newQuestFrame, text='Subscribe', command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2)
 
-        # Status text
-
-        statusFrame = tk.Frame(mainFrame)
-        statusFrame.grid(row=5, column=0, sticky='we', padx=2, pady=2)
-        statusFrame.grid_columnconfigure(0, weight=1)
-
-        self.statusText = tk.Text(statusFrame, font=('Helvetica', 10))
-        self.statusText.grid(row=1, column=0, padx=2, pady=2)
-        self.statusText.config(state=tk.DISABLED)
-
-        statusTextScrollBar = tk.Scrollbar(statusFrame, command=self.statusText.yview)
-        self.statusText['yscrollcommand'] = statusTextScrollBar.set
-        statusTextScrollBar.grid(row=1, column=1, sticky='ns')
-
         # Buttons
 
         buttonsFrame = tk.Frame(mainFrame)
-        buttonsFrame.grid(row=6, column=0, sticky='we', padx=2, pady=2)
+        buttonsFrame.grid(row=5, column=0, sticky='we', padx=2, pady=2)
 
         tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).grid(row=0, column=0, padx=2, pady=2)
         tk.Button(buttonsFrame, text='Close', command=closeCallback).grid(row=0, column=1, padx=2, pady=2)
@@ -119,8 +105,3 @@ class mainView:
         else:
             value = time.strftime('%H:%M:%S', time.gmtime(value))
         self.nextCheckLabel.config(text=value)
-
-    def addStatusMsg(self, msg):
-        self.statusText.config(state=tk.NORMAL)
-        self.statusText.insert(tk.END, msg + '\n')
-        self.statusText.config(state=tk.DISABLED)

@@ -12,14 +12,14 @@ timerLength = 5
 countdown = 0
     
 def checkWQ():
-    now = datetime.datetime.now()
-    gui.mainView.setLastCheckValue(now.strftime("%Y-%m-%d %H:%M:%S"))
-    gui.mainView.addStatusMsg(now.strftime("%Y-%m-%d %H:%M:%S"))
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    gui.mainView.setLastCheckValue(now)
+    print('Check ' + str(quests.keys()) + ' at ' + now)
 
     html = requester.getWorldQuestsHtml(worldQuestsUrl + region)
 
     for qid, qw in quests.items():
-        if str(html).find('quest=' + str(qid)) > 0:
+        if str(html).find('"url":"\/quest=' + str(qid) + '","') > 0:
             qw.setFound()
             gui.popupView(str(qid) + ' is up !')
         else:
