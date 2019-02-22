@@ -4,6 +4,8 @@ import sys
 from PIL import ImageTk, Image
 
 
+QUEST_ID_ENTRY_WIDTH = 8
+
 def getAsset(file):
     return ImageTk.PhotoImage(Image.open(getBundlePath('assets/' + file)))
 

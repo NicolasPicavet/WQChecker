@@ -90,7 +90,7 @@ class mainView:
         newQuestFrame.grid(row=4, column=0, sticky='we', padx=2, pady=2)
         newQuestFrame.grid_columnconfigure(1, weight=1)
 
-        newQuestEntry = tk.Entry(newQuestFrame)
+        newQuestEntry = tk.Entry(newQuestFrame, width=utils.QUEST_ID_ENTRY_WIDTH)
         newQuestEntry.grid(row=0, column=0, sticky='w')
 
         def newQuestSubscription():

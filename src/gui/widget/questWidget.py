@@ -6,7 +6,7 @@ import gui.utils as utils
 
 class questWidget:
 
-    wqIconLabel = None
+    questIconLabel = None
     id = None
     questStatusLabel = None
     widgetFrame = None
@@ -25,11 +25,11 @@ class questWidget:
         questVar.set(questId)
         questVar.trace('w', lambda name, index, mode, questVar=questVar: self.storeNewValueThenCallback(questVar.get()))
 
-        questEntry = tk.Entry(self.widgetFrame, textvariable=questVar)
+        questEntry = tk.Entry(self.widgetFrame, textvariable=questVar, width=utils.QUEST_ID_ENTRY_WIDTH)
         questEntry.grid(row=0, column=0, sticky=tk.W)
 
-        self.wqIconLabel = tk.Label(self.widgetFrame)
-        self.wqIconLabel.grid(row=0, column=1)
+        self.questIconLabel = tk.Label(self.widgetFrame)
+        self.questIconLabel.grid(row=0, column=1)
         self.setUnchecked()
 
         self.questNameLabel = tk.Label(self.widgetFrame, text='...')
@@ -56,7 +56,7 @@ class questWidget:
         self.updateStatus(utils.unfoundIcon)
 
     def updateStatus(self, icon):
-        self.wqIconLabel.config(image=icon)
+        self.questIconLabel.config(image=icon)
 
     def setQuestName(self, questName):
         self.questNameLabel.config(text=questName)
