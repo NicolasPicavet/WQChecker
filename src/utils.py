@@ -3,7 +3,7 @@ import sys
 
 from PIL import ImageTk, Image
 
-
+HOUR_IN_SECOND = 60*60
 QUEST_ID_ENTRY_WIDTH = 7
 
 def getAsset(file):

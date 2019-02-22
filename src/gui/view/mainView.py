@@ -1,7 +1,7 @@
 import time
 import tkinter as tk
 
-import gui.utils as utils
+import utils
 from gui.widget.questWidget import questWidget
 
 
@@ -17,7 +17,7 @@ class mainView:
     def __init__(self):
         utils.loadAssets()
 
-    def buildMainView(self, quests, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback):
+    def buildMainView(self, quests, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback, setIntervalCallback):
 
         self.root.wm_title('World Quests Checker')
         self.root.tk.call('wm', 'iconphoto', self.root._w, utils.favicon)
@@ -52,6 +52,18 @@ class mainView:
         tk.Label(lastCheckFrame, text='Last check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
         self.lastCheckLabel = tk.Label(lastCheckFrame, text='lastCheckValue', anchor=tk.W)
         self.lastCheckLabel.grid(row=1, column=1)
+
+        # Interval
+
+        intervalFrame = tk.Frame(mainFrame)
+        intervalFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        intervalFrame.grid_columnconfigure(0, weight=1)
+
+        tk.Label(intervalFrame, text='Interval', anchor=tk.W).grid(row=0, column=0, sticky=tk.W)
+        intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
+        intervalScale.set(3)
+        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue)))
+        intervalScale.grid(row=0, column=1)
 
         # Next Check
 
@@ -117,7 +129,7 @@ class mainView:
         self.lastCheckLabel.config(text=value)
 
     def setNextCheckValue(self, value):
-        if value >= 60*60*24:
+        if value >= 24 * utils.HOUR_IN_SECOND:
             value = '> 1 day'
         else:
             value = time.strftime('%H:%M:%S', time.gmtime(value))

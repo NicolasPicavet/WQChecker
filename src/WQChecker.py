@@ -1,15 +1,16 @@
 # pylint: disable=anomalous-backslash-in-string
 
-import net.requester as requester
-import gui.gui as gui
-
 import threading
 import datetime
 import sys
 
+import net.requester as requester
+import gui.gui as gui
+import utils
+
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
 region = 'eu'
-timerLength = 5
+interval = 3
 countdown = 0
     
 def checkWQ():
@@ -47,8 +48,8 @@ def checkerLoop():
     global countdown
     stopTimer()
     checkWQ()
-    timer = threading.Timer(timerLength, checkerLoop)
-    countdown = int(timerLength)
+    timer = threading.Timer(interval, checkerLoop)
+    countdown = interval
     countdownLoop()
     timer.start()
 
@@ -74,6 +75,7 @@ def exitApp():
     sys.exit()
 
 def registerQuests():
+
     def setQuestNameThread(questWidget):
         if questWidget.id != '':
             questWidget.setQuestName(requester.getQuestName(questWidget.id))
@@ -81,6 +83,7 @@ def registerQuests():
             questWidget.resetQuestName()
             questWidget.setUnchecked()
         return # close thread
+
     quests.clear()
     for qw in gui.mainView.questsWidgets:
         try:
@@ -102,10 +105,16 @@ def unregisterQuest(questId):
     else:
         print('Unregistered quest ' + str(questId))
 
+def setInterval(newInterval):
+    global interval
+    interval = newInterval * utils.HOUR_IN_SECOND
+    print('New interval: ' + str(newInterval) + ' hour(s)')
+    checkerLoop()
 
 
-mainView = gui.mainView.buildMainView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest)
 
-checkerLoop()
+mainView = gui.mainView.buildMainView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest, setIntervalCallback=setInterval)
+
+setInterval(3)
 
 mainView.mainloop()

@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import ImageTk, Image
 import webbrowser
 
-import gui.utils as utils
+import utils
 import net.requester as requester
 
 
@@ -17,12 +17,12 @@ class questWidget:
 
     def buildWidget(self, questsFrame, questCallback, deleteCallback, questId):
         self.questCallback = questCallback
+        self.id = questId
 
         self.widgetFrame = tk.Frame(questsFrame)
         self.widgetFrame.pack(fill='both', expand=True)
         self.widgetFrame.grid_columnconfigure(2, weight=1)
 
-        self.id = questId
         questVar = tk.StringVar()
         questVar.set(questId)
         questVar.trace('w', lambda name, index, mode, questVar=questVar: self.storeNewValueThenCallback(questVar.get()))
