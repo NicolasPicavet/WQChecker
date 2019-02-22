@@ -5,12 +5,15 @@ from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
 
-def getWorldQuestsHtml(url, dump=False):
-    return get(url, dump)
+WORLD_QUEST_URL = 'https://www.wowhead.com/world-quests/bfa/'
+QUEST_URL= 'https://www.wowhead.com/quest='
 
-def getQuestName(url, dump=False):
+def getWorldQuestsHtml(region, dump=False):
+    return get(WORLD_QUEST_URL + region, dump)
+
+def getQuestName(questId, dump=False):
     try:
-        return next(iter(get(url, dump).select('h1') or []), None).text
+        return next(iter(get(QUEST_URL + questId, dump).select('h1') or []), None).text
     except AttributeError:
         return '!Quest name not found!'
 

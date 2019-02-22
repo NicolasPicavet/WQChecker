@@ -6,8 +6,6 @@ import gui.gui as gui
 import threading
 import datetime
 
-worldQuestsUrl = 'https://www.wowhead.com/world-quests/bfa/'
-questUrl= 'https://www.wowhead.com/quest='
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
 region = 'eu'
 timerLength = 5
@@ -18,7 +16,7 @@ def checkWQ():
     gui.mainView.setLastCheckValue(now)
     print('Check ' + str(quests.keys()) + ' at ' + now)
 
-    html = requester.getWorldQuestsHtml(worldQuestsUrl + region)
+    html = requester.getWorldQuestsHtml(region)
 
     try:
         for qid, qw in quests.items():
@@ -28,6 +26,7 @@ def checkWQ():
             else:
                 qw.setUnfound()
     except RuntimeError as e:
+        # when quests change size during loop
         print(e.__str__)
         checkWQ()
     
@@ -76,7 +75,7 @@ def exitApp():
 def registerQuests():
     def setQuestNameThread(questWidget):
         if questWidget.id != '':
-            questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.id)))
+            questWidget.setQuestName(requester.getQuestName(str(questWidget.id)))
         else:
             questWidget.resetQuestName()
             questWidget.setUnchecked()
