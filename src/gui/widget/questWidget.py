@@ -30,13 +30,14 @@ class questWidget:
 
         self.questIconLabel = tk.Label(self.widgetFrame)
         self.questIconLabel.grid(row=0, column=1)
-        self.setUnchecked()
 
         self.questNameLabel = tk.Label(self.widgetFrame)
         self.questNameLabel.grid(row=0, column=2)
 
         deleteButton = tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback))
         deleteButton.grid(row=0, column=3)
+        
+        self.reset()
 
     def forgetWidgetThenCallback(self, deleteCallback):
         self.widgetFrame.pack_forget()
@@ -60,3 +61,7 @@ class questWidget:
 
     def setQuestName(self, questName):
         self.questNameLabel.config(text=questName)
+
+    def reset(self):
+        self.setQuestName('...')
+        self.setUnchecked()

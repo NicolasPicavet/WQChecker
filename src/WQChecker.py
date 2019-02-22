@@ -78,11 +78,18 @@ def registerQuests():
         if questWidget.id != '':
             questWidget.setQuestName(requester.getQuestName(questUrl + str(questWidget.id)))
         else:
-            questWidget.setQuestName('...')
+            questWidget.resetQuestName()
+            questWidget.setUnchecked()
     quests.clear()
     for qw in gui.mainView.questsWidgets:
-        quests[qw.id] = qw
-        threading.Thread(target=setQuestNameThread, args=(qw,)).start()
+        try:
+            qid = int(qw.id)
+        except ValueError:
+            print('Invalid value for quest id: ' + str(qw.id))
+            qw.reset()
+        else:
+            quests[qid] = qw
+            threading.Thread(target=setQuestNameThread, args=(qw,)).start()
 
 def unregisterQuest(questId):
     try:
