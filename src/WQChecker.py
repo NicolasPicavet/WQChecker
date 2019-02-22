@@ -1,3 +1,5 @@
+# pylint: disable=anomalous-backslash-in-string
+
 import net.requester as requester
 import gui.gui as gui
 
