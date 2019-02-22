@@ -30,7 +30,7 @@ class mainView:
         # Radio buttons
 
         radioFrame = tk.Frame(mainFrame)
-        radioFrame.grid(row=0, column=0, sticky='we', padx=2, pady=2)
+        radioFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         radioFrame.grid_columnconfigure(0, weight=1)
 
         tk.Label(radioFrame, text='Region', anchor=tk.W).grid(row=0, column=0, sticky=tk.W)
@@ -45,7 +45,7 @@ class mainView:
         # Last Check
 
         lastCheckFrame = tk.Frame(mainFrame)
-        lastCheckFrame.grid(row=1, column=0, sticky='we', padx=2, pady=2)
+        lastCheckFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         lastCheckFrame.grid_columnconfigure(0, weight=1)
 
         tk.Label(lastCheckFrame, text='Last check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
@@ -55,7 +55,7 @@ class mainView:
         # Next Check
 
         nextCheckFrame = tk.Frame(mainFrame)
-        nextCheckFrame.grid(row=2, column=0, sticky='we', padx=2, pady=2)
+        nextCheckFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         nextCheckFrame.grid_columnconfigure(0, weight=1)
 
         tk.Label(nextCheckFrame, text='Next check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
@@ -65,7 +65,7 @@ class mainView:
         # Quests subscriptions
 
         questsFrame = tk.Frame(mainFrame)
-        questsFrame.grid(row=3, column=0, sticky='we', padx=2, pady=2)
+        questsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         questsFrame.grid_columnconfigure(0, weight=1)
 
         def buildQuestWidget(q):
@@ -89,7 +89,7 @@ class mainView:
         # New quest subscription
 
         newQuestFrame = tk.Frame(mainFrame)
-        newQuestFrame.grid(row=4, column=0, sticky='we', padx=2, pady=2)
+        newQuestFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         newQuestFrame.grid_columnconfigure(1, weight=1)
 
         newQuestEntry = tk.Entry(newQuestFrame, width=utils.QUEST_ID_ENTRY_WIDTH)
@@ -105,7 +105,7 @@ class mainView:
         # Buttons
 
         buttonsFrame = tk.Frame(mainFrame)
-        buttonsFrame.grid(row=5, column=0, sticky='we', padx=2, pady=2)
+        buttonsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
 
         tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).grid(row=0, column=0, padx=2, pady=2)
         tk.Button(buttonsFrame, text='Close', command=closeCallback).grid(row=0, column=1, padx=2, pady=2)
