@@ -14,6 +14,9 @@ class mainView:
     statusText = None
     lastCheckLabel = None
     nextCheckLabel = None
+
+    regionVar = None # to prevent garbage collecting
+
     questsWidgets = []
 
     def __init__(self):
@@ -38,14 +41,13 @@ class mainView:
 
         tk.Label(regionFrame, text='Region', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
 
-        regionVar = tk.IntVar()
+        
+        self.regionVar = tk.StringVar(value=region)
         def createRegionRadio(regionKey, regionName):
-            return tk.Radiobutton(regionFrame, text=regionName, variable=regionVar, value=regionKey, command=lambda:regionCallback(regionKey))
+            return tk.Radiobutton(regionFrame, text=regionName, variable=self.regionVar, value=regionKey, command=lambda:regionCallback(regionKey), tristatevalue=None)
         for rkey, rname in regions.items():
             radioButton = createRegionRadio(rkey, rname)
             radioButton.pack(side=tk.LEFT)
-            if rkey == region:
-                radioButton.select()
 
         # Horizontal separation
         hr(mainFrame)

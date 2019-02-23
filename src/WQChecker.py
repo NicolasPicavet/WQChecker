@@ -99,13 +99,9 @@ def registerQuest(questWidget=None, oldId=None):
         quests[qid] = questWidget
         # store in config data
         config.quest(qid, lambda:None)
-        # fetch quest name
+        # async quest name fetching
         def setQuestNameThread(questWidget):
-            # if questWidget.id != '':
             questWidget.setQuestName(config.questCache(questWidget.id, lambda:requester.getQuestName(questWidget.id)))
-            # else:
-            #     questWidget.resetQuestName()
-            #     questWidget.setUnchecked()
             return # close thread
         t = threading.Thread(target=setQuestNameThread, args=(questWidget,))
         t.setDaemon(True)
