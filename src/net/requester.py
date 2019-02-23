@@ -3,14 +3,17 @@ from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
 
-WORLD_QUEST_URL = 'https://www.wowhead.com/world-quests/bfa/'
+WORLD_QUEST_URL = 'https://www.wowhead.com/world-quests/'
 QUEST_URL= 'https://www.wowhead.com/quest='
 
 def getQuestUrl(questId):
     return QUEST_URL + str(questId)
 
-def getWorldQuestsHtml(region, dump=False):
-    return _get(WORLD_QUEST_URL + region, dump)
+def getWorldQuestsHtml(extensions, region, dump=False):
+    html = ''
+    for e in extensions:
+        html += str(_get(WORLD_QUEST_URL + e + '/' + region, dump))
+    return html
 
 def getQuestName(questId, dump=False):
     try:

@@ -13,6 +13,7 @@ import config
 regions = {'eu':'EU', 'na':'NA'}
 region = config.region(lambda:'eu', False)
 interval = config.interval(lambda:3 * utils.HOUR_IN_SECOND, False)
+extensions = ['legion', 'bfa']
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
 
 countdown = 0
@@ -22,11 +23,11 @@ def checkWQ():
     gui.mainView.setLastCheckValue(now)
     print('Check ' + str(quests.keys()) + ' at ' + now)
 
-    html = requester.getWorldQuestsHtml(region)
+    html = requester.getWorldQuestsHtml(extensions, region)
 
     try:
         for qid, qw in quests.items():
-            if str(html).find('"url":"\/quest=' + str(qid) + '","') > 0:
+            if html.find('"url":"\/quest=' + str(qid) + '","') > 0:
                 qw.setFound()
                 gui.popupView(str(qid) + ' is up !')
             else:
