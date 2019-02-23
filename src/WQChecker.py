@@ -11,9 +11,9 @@ import config
 
 
 regions = {'eu':'EU', 'na':'NA'}
-region = config.region()
+region = config.region(lambda:'eu', False)
+interval = config.interval(lambda:3 * utils.HOUR_IN_SECOND, False)
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
-interval = config.interval()
 
 countdown = 0
     
@@ -38,7 +38,7 @@ def checkWQ():
     
 def changeRegion(newRegion):
     global region
-    config.region(newRegion)
+    region = config.region(lambda:newRegion)
     checkerLoop()
 
 def stopTimer():
@@ -82,7 +82,7 @@ def registerQuests():
 
     def setQuestNameThread(questWidget):
         if questWidget.id != '':
-            questWidget.setQuestName(requester.getQuestName(questWidget.id))
+            questWidget.setQuestName(config.questCache(questWidget.id, lambda:requester.getQuestName(questWidget.id)))
         else:
             questWidget.resetQuestName()
             questWidget.setUnchecked()
@@ -109,7 +109,7 @@ def unregisterQuest(questId):
 
 def setInterval(newInterval):
     global interval
-    interval = config.interval(newInterval)
+    interval = config.interval(lambda:newInterval)
     checkerLoop()
 
 
