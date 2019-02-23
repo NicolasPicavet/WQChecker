@@ -32,15 +32,15 @@ class mainView:
 
         # Region
 
-        radioFrame = tk.Frame(mainFrame)
-        radioFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        radioFrame.grid_columnconfigure(0, weight=1)
+        regionFrame = tk.Frame(mainFrame)
+        regionFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        regionFrame.grid_columnconfigure(0, weight=1)
 
-        tk.Label(radioFrame, text='Region', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
+        tk.Label(regionFrame, text='Region', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
 
-        regionVar = None
+        regionVar = tk.IntVar()
         def createRegionRadio(regionKey, regionName):
-            return tk.Radiobutton(radioFrame, text=regionName, variable=regionVar, value=regionKey, command=lambda:regionCallback(regionKey))
+            return tk.Radiobutton(regionFrame, text=regionName, variable=regionVar, value=regionKey, command=lambda:regionCallback(regionKey))
         for rkey, rname in regions.items():
             radioButton = createRegionRadio(rkey, rname)
             radioButton.pack(side=tk.LEFT)
