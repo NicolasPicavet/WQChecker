@@ -114,17 +114,18 @@ class mainView:
 
         # New quest subscription
 
+        def newQuestSubscription(event=None):
+            self.questsWidgets.append(buildQuestWidget(newQuestEntry.get()))
+            questRegisterCallback()
+            newQuestEntry.delete(0, tk.END)
+
         newQuestFrame = tk.Frame(mainFrame)
         newQuestFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         newQuestFrame.grid_columnconfigure(1, weight=1)
 
         newQuestEntry = tk.Entry(newQuestFrame, width=utils.QUEST_ID_ENTRY_WIDTH)
         newQuestEntry.grid(row=0, column=0, sticky=tk.W)
-
-        def newQuestSubscription():
-            self.questsWidgets.append(buildQuestWidget(newQuestEntry.get()))
-            questRegisterCallback()
-            newQuestEntry.delete(0, tk.END)
+        newQuestEntry.bind('<Return>', newQuestSubscription)
 
         tk.Button(newQuestFrame, image=utils.addIcon, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
 

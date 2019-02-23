@@ -1,5 +1,3 @@
-# from https://realpython.com/python-web-scraping-practical-introduction/
-
 import requests
 from requests.exceptions import RequestException
 from contextlib import closing
@@ -27,6 +25,8 @@ def _get(url, dump):
         file.write(str(html))
         file.close()
     return html
+
+# from https://realpython.com/python-web-scraping-practical-introduction/
 
 def _simple_get(url):
     """
