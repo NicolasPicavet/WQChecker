@@ -19,7 +19,7 @@ class mainView:
     def __init__(self):
         utils.loadAssets()
 
-    def buildMainView(self, quests, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback, setIntervalCallback):
+    def buildMainView(self, quests, regions, region, interval, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback, setIntervalCallback):
 
         self.root.wm_title('World Quests Checker')
         self.root.tk.call('wm', 'iconphoto', self.root._w, utils.favicon)
@@ -36,14 +36,16 @@ class mainView:
         radioFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         radioFrame.grid_columnconfigure(0, weight=1)
 
-        tk.Label(radioFrame, text='Region', anchor=tk.W).grid(row=0, column=0, sticky=tk.W)
+        tk.Label(radioFrame, text='Region', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
 
-        region = None
-        naRadio = tk.Radiobutton(radioFrame, text='NA', variable=region, value='na', command=lambda:regionCallback('na'))
-        naRadio.grid(row=0, column=2)
-        euRadio = tk.Radiobutton(radioFrame, text='EU', variable=region, value='eu', command=lambda:regionCallback('eu'))
-        euRadio.grid(row=0, column=1)
-        euRadio.select()
+        regionVar = None
+        def createRegionRadio(regionKey, regionName):
+            return tk.Radiobutton(radioFrame, text=regionName, variable=regionVar, value=regionKey, command=lambda:regionCallback(regionKey))
+        for rkey, rname in regions.items():
+            radioButton = createRegionRadio(rkey, rname)
+            radioButton.pack(side=tk.LEFT)
+            if rkey == region:
+                radioButton.select()
 
         # Horizontal separation
         hr(mainFrame)
@@ -77,8 +79,8 @@ class mainView:
         tk.Label(intervalFrame, text='Interval', anchor=tk.W).grid(row=0, column=0, sticky=tk.W + tk.N)
 
         intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
-        intervalScale.set(3)
-        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue)))
+        intervalScale.set(round(interval / utils.HOUR_IN_SECOND))
+        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue) * utils.HOUR_IN_SECOND))
         intervalScale.grid(row=0, column=1)
         
         tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=2, sticky=tk.N)

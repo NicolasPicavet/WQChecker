@@ -7,10 +7,14 @@ import sys
 import net.requester as requester
 import gui.gui as gui
 import utils
+import config
 
+
+regions = {'eu':'EU', 'na':'NA'}
+region = config.region()
 quests = {51974:None, 51976:None, 51977:None, 51978:None}
-region = 'eu'
-interval = 3
+interval = config.interval()
+
 countdown = 0
     
 def checkWQ():
@@ -28,13 +32,13 @@ def checkWQ():
             else:
                 qw.setUnfound()
     except RuntimeError as e:
-        # when quests change size during loop
+        # workaround when quests change size during loop
         print(e.__str__)
         checkWQ()
     
 def changeRegion(newRegion):
     global region
-    region = newRegion
+    config.region(newRegion)
     checkerLoop()
 
 def stopTimer():
@@ -102,19 +106,15 @@ def unregisterQuest(questId):
         quests.pop(questId)
     except KeyError:
         print('Unregister quest ' + str(questId) + ' failed')
-    else:
-        print('Unregistered quest ' + str(questId))
 
 def setInterval(newInterval):
     global interval
-    interval = newInterval * utils.HOUR_IN_SECOND
-    print('New interval: ' + str(newInterval) + ' hour(s)')
+    interval = config.interval(newInterval)
     checkerLoop()
 
 
+mainView = gui.mainView.buildMainView(quests=quests, regions=regions, region=region, interval=interval, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest, setIntervalCallback=setInterval)
 
-mainView = gui.mainView.buildMainView(quests=quests, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest, setIntervalCallback=setInterval)
-
-setInterval(3)
+checkerLoop()
 
 mainView.mainloop()
