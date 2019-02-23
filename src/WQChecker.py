@@ -14,14 +14,14 @@ regions = {'eu':'EU', 'na':'NA'}
 region = config.region(lambda:'eu', False)
 interval = config.interval(lambda:3 * utils.HOUR_IN_SECOND, False)
 extensions = ['legion', 'bfa']
-quests = {51974:None, 51976:None, 51977:None, 51978:None}
+quests = config.getQuests()
+# quests = {51974:None, 51976:None, 51977:None, 51978:None}
 
 countdown = 0
     
 def checkWQ():
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     gui.mainView.setLastCheckValue(now)
-    print('Check ' + str(quests.keys()) + ' at ' + now)
 
     html = requester.getWorldQuestsHtml(extensions, region)
 
@@ -36,6 +36,7 @@ def checkWQ():
         # workaround when quests change size during loop
         print(e.__str__)
         checkWQ()
+    print('Checked quests ' + str(quests.keys()) + ' at ' + now)
     
 def changeRegion(newRegion):
     global region
@@ -79,34 +80,36 @@ def exitApp():
     stopTimer()
     sys.exit()
 
-def registerQuests():
-
-    def setQuestNameThread(questWidget):
-        if questWidget.id != '':
-            questWidget.setQuestName(config.questCache(questWidget.id, lambda:requester.getQuestName(questWidget.id)))
-        else:
-            questWidget.resetQuestName()
-            questWidget.setUnchecked()
-        return # close thread
-
-    quests.clear()
-    for qw in gui.mainView.questsWidgets:
+def registerQuest(questWidget=None, oldId=None):
+    # there is an old id to remove
+    if oldId != None:
+        # remove from running data
+        quests.pop(oldId)
+        # remove from config data
+        config.quest(oldId, None)
+    # there is a new quest to add
+    if questWidget != None:
+        # check new quest id type
         try:
-            qid = int(qw.id)
+            qid = int(questWidget.id)
         except ValueError:
-            print('Invalid value for quest id: ' + str(qw.id))
-            qw.reset()
-        else:
-            quests[qid] = qw
-            t = threading.Thread(target=setQuestNameThread, args=(qw,))
-            t.setDaemon(True)
-            t.start()
-
-def unregisterQuest(questId):
-    try:
-        quests.pop(questId)
-    except KeyError:
-        print('Unregister quest ' + str(questId) + ' failed')
+            print('Invalid value for quest id: "' + str(questWidget.id) + '"')
+            questWidget.reset()
+        # store in running data
+        quests[qid] = questWidget
+        # store in config data
+        config.quest(qid, lambda:None)
+        # fetch quest name
+        def setQuestNameThread(questWidget):
+            # if questWidget.id != '':
+            questWidget.setQuestName(config.questCache(questWidget.id, lambda:requester.getQuestName(questWidget.id)))
+            # else:
+            #     questWidget.resetQuestName()
+            #     questWidget.setUnchecked()
+            return # close thread
+        t = threading.Thread(target=setQuestNameThread, args=(questWidget,))
+        t.setDaemon(True)
+        t.start()
 
 def setInterval(newInterval):
     global interval
@@ -114,7 +117,7 @@ def setInterval(newInterval):
     checkerLoop()
 
 
-mainView = gui.mainView.buildMainView(quests=quests, regions=regions, region=region, interval=interval, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuests, questUnregisterCallback=unregisterQuest, setIntervalCallback=setInterval)
+mainView = gui.mainView.buildMainView(quests=quests, regions=regions, region=region, interval=interval, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuest, setIntervalCallback=setInterval)
 
 checkerLoop()
 

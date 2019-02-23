@@ -19,7 +19,7 @@ class mainView:
     def __init__(self):
         utils.loadAssets()
 
-    def buildMainView(self, quests, regions, region, interval, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, questUnregisterCallback, setIntervalCallback):
+    def buildMainView(self, quests, regions, region, interval, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, setIntervalCallback):
 
         self.root.wm_title('World Quests Checker')
         self.root.tk.call('wm', 'iconphoto', self.root._w, utils.favicon)
@@ -100,23 +100,21 @@ class mainView:
             def removeQuestWidgetThenCallback(questWidget):
                 try:
                     self.questsWidgets.remove(questWidget)
-                    questUnregisterCallback(questWidget.id)
+                    questRegisterCallback(oldId=questWidget.id)
                 except ValueError:
                     print('Remove questWidget ' + str(questWidget) + ' failed')
 
-            qw.buildWidget(questsFrame=questsFrame, questCallback=questRegisterCallback, deleteCallback=removeQuestWidgetThenCallback, questId=q)
+            qw.buildWidget(questsFrame=questsFrame, registerCallback=questRegisterCallback, deleteCallback=removeQuestWidgetThenCallback, questId=q)
             return qw
             
         self.questsWidgets = []
         for qid in quests.keys():
             self.questsWidgets.append(buildQuestWidget(qid))
-        questRegisterCallback()
 
         # New quest subscription
 
         def newQuestSubscription(event=None):
             self.questsWidgets.append(buildQuestWidget(newQuestEntry.get()))
-            questRegisterCallback()
             newQuestEntry.delete(0, tk.END)
 
         newQuestFrame = tk.Frame(mainFrame)

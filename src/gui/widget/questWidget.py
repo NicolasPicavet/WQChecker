@@ -13,10 +13,10 @@ class questWidget:
     questStatusLabel = None
     widgetFrame = None
 
-    questCallback = None
+    registerCallback = None
 
-    def buildWidget(self, questsFrame, questCallback, deleteCallback, questId):
-        self.questCallback = questCallback
+    def buildWidget(self, questsFrame, registerCallback, deleteCallback, questId):
+        self.registerCallback = registerCallback
         self.id = questId
 
         self.widgetFrame = tk.Frame(questsFrame)
@@ -40,6 +40,7 @@ class questWidget:
 
         tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback)).grid(row=0, column=4, padx=2)
         
+        self.registerCallback(self)
         self.reset()
 
     def _webLinkCallback(self):
@@ -49,9 +50,10 @@ class questWidget:
         self.widgetFrame.pack_forget()
         deleteCallback(self)
 
-    def storeNewValueThenCallback(self, newQuestId):
-        self.id = newQuestId
-        self.questCallback()
+    def storeNewValueThenCallback(self, newId):
+        oldId = self.id
+        self.id = newId
+        self.registerCallback(self, oldId)
 
     def setFound(self):
         self.updateStatus(utils.foundIcon)
