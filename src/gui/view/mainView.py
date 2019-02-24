@@ -1,8 +1,12 @@
 import time
 import tkinter as tk
+import webbrowser
 
 import utils
 import AssetsLibrary as Assets
+import Constants
+
+import net.requester as requester
 
 from gui.view.View import View
 from gui.widget.QuestWidget import QuestWidget
@@ -14,7 +18,7 @@ class MainView(View):
 
     questsWidgets = []
 
-    def buildMainView(self, quests, regions, region, interval, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, setIntervalCallback):
+    def buildMainView(self, quests, region, interval, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, setIntervalCallback):
         self.root.wm_title('World Quests Checker')
         self.root.tk.call('wm', 'iconphoto', self.root._w, Assets.favicon.data)
         self.root.resizable(False, False)
@@ -24,6 +28,19 @@ class MainView(View):
         mainFrame = tk.Frame(self.root)
         mainFrame.pack(fill=tk.BOTH, expand=True)
 
+        # World Quests
+
+        worldQuestsFrame = tk.Frame(mainFrame)
+        worldQuestsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        worldQuestsFrame.grid_columnconfigure(0, weight=1)
+
+        tk.Label(worldQuestsFrame, text='World Quests', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
+
+        def _createExpansionButton(expansion, region):
+            tk.Button(worldQuestsFrame, image=Assets.library[e].data, command=lambda:webbrowser.open_new(requester.getWorldQuestUrl(expansion, self.regionVar.get()))).pack(side=tk.LEFT, padx=2)
+        for e in Constants.EXPANSIONS:
+            _createExpansionButton(e, region)
+
         # Region
 
         regionFrame = tk.Frame(mainFrame)
@@ -31,14 +48,12 @@ class MainView(View):
         regionFrame.grid_columnconfigure(0, weight=1)
 
         tk.Label(regionFrame, text='Region', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
-
         
         self.regionVar = tk.StringVar(value=region)
-        def createRegionRadio(regionKey, regionName):
-            return tk.Radiobutton(regionFrame, text=regionName, variable=self.regionVar, value=regionKey, command=lambda:regionCallback(regionKey), tristatevalue=None)
-        for rkey, rname in regions.items():
-            radioButton = createRegionRadio(rkey, rname)
-            radioButton.pack(side=tk.LEFT)
+        def _createRegionRadio(regionKey, regionName):
+            tk.Radiobutton(regionFrame, text=regionName, variable=self.regionVar, value=regionKey, command=lambda:regionCallback(regionKey), tristatevalue=None).pack(side=tk.LEFT)
+        for rkey, rname in Constants.REGIONS.items():
+            _createRegionRadio(rkey, rname)
 
         # Horizontal separation
         HrWidget(mainFrame)
@@ -72,8 +87,8 @@ class MainView(View):
         tk.Label(intervalFrame, text='Interval', anchor=tk.W).grid(row=0, column=0, sticky=tk.W + tk.N)
 
         intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
-        intervalScale.set(round(interval / utils.HOUR_IN_SECOND))
-        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue) * utils.HOUR_IN_SECOND))
+        intervalScale.set(round(interval / Constants.HOUR_IN_SECOND))
+        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue) * Constants.HOUR_IN_SECOND))
         intervalScale.grid(row=0, column=1)
         
         tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=2, sticky=tk.N)
@@ -112,7 +127,7 @@ class MainView(View):
         newQuestFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         newQuestFrame.grid_columnconfigure(1, weight=1)
 
-        newQuestEntry = tk.Entry(newQuestFrame, width=utils.QUEST_ID_ENTRY_WIDTH)
+        newQuestEntry = tk.Entry(newQuestFrame, width=Constants.QUEST_ID_ENTRY_WIDTH)
         newQuestEntry.grid(row=0, column=0, sticky=tk.W)
         newQuestEntry.bind('<Return>', newQuestSubscription)
 
@@ -132,7 +147,7 @@ class MainView(View):
         self.lastCheckLabel.config(text=value)
 
     def setNextCheckValue(self, value):
-        if value >= 24 * utils.HOUR_IN_SECOND:
+        if value >= 24 * Constants.HOUR_IN_SECOND:
             value = '> 1 day'
         else:
             value = time.strftime('%H:%M:%S', time.gmtime(value))
