@@ -11,7 +11,7 @@ class Asset:
 
     def __init__(self, name):
         self.name = name
-        Assets.library.append(self)
+        Assets.library[self.name[:-4]] = self
 
     def load(self):
         if not self.loaded:
@@ -20,11 +20,11 @@ class Asset:
 
 def loadAssets():
     global library
-    for a in library:
+    for a in library.values():
         a.load()
 
 
-library = []
+library = {}
 
 favicon = Asset('favicon.png')
 wowheadIcon = Asset('wowhead.png')
@@ -33,3 +33,5 @@ deleteIcon = Asset('delete.png')
 foundIcon = Asset('found.png')
 unfoundIcon = Asset('unfound.png')
 uncheckedIcon = Asset('unchecked.png')
+legionIcon = Asset('legion.png')
+bfaIcon = Asset('bfa.png')
