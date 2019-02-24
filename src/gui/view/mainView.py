@@ -2,7 +2,6 @@ import time
 import tkinter as tk
 import webbrowser
 
-import utils
 import AssetsLibrary as Assets
 import Constants
 
@@ -22,10 +21,13 @@ class MainView(View):
         self.root.wm_title('World Quests Checker')
         self.root.tk.call('wm', 'iconphoto', self.root._w, Assets.favicon.data)
         self.root.resizable(False, False)
-        self.root.minsize(300, 0)
+        self.root.minsize(400, 0)
         self.root.protocol("WM_DELETE_WINDOW", closeCallback)
 
-        mainFrame = tk.Frame(self.root)
+        paddingFrame = tk.Frame(self.root, padx=7, pady=7, background=Constants.HR_BACKGROUND)
+        paddingFrame.pack(fill=tk.BOTH, expand=True)
+
+        mainFrame = tk.Frame(paddingFrame, padx=7, pady=7)
         mainFrame.pack(fill=tk.BOTH, expand=True)
 
         # World Quests
