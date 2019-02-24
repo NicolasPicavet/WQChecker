@@ -132,6 +132,7 @@ class MainView(View):
         newQuestEntry = tk.Entry(newQuestFrame, width=Constants.QUEST_ID_ENTRY_WIDTH)
         newQuestEntry.grid(row=0, column=0, sticky=tk.W)
         newQuestEntry.bind('<Return>', newQuestSubscription)
+        newQuestEntry.focus()
 
         tk.Button(newQuestFrame, image=Assets.addIcon.data, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
 
