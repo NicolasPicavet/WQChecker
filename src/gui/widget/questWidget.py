@@ -3,17 +3,22 @@ from PIL import ImageTk, Image
 import webbrowser
 
 import utils
+import AssetsLibrary as Assets
 import net.requester as requester
 
+from gui.widget.Widget import Widget
 
-class questWidget:
 
-    questIconLabel = None
-    id = None
-    questStatusLabel = None
-    widgetFrame = None
+class QuestWidget(Widget):
 
-    registerCallback = None
+    def _getQuestId(self):
+        return self.__QuestId
+    def _setQuestId(self, value):
+        try:
+            self.__QuestId = int(value)
+        except ValueError:
+            raise TypeError("QuestId must be an integer")
+    id = property(_getQuestId, _setQuestId)
 
     def buildWidget(self, questsFrame, registerCallback, deleteCallback, questId):
         self.registerCallback = registerCallback
@@ -36,9 +41,9 @@ class questWidget:
         self.questNameLabel = tk.Label(self.widgetFrame, anchor=tk.W)
         self.questNameLabel.grid(row=0, column=2, sticky=tk.W)
 
-        tk.Button(self.widgetFrame, image=utils.wowheadIcon, command=self._webLinkCallback).grid(row=0, column=3, padx=2)
+        tk.Button(self.widgetFrame, image=Assets.wowheadIcon.data, command=self._webLinkCallback).grid(row=0, column=3, padx=2)
 
-        tk.Button(self.widgetFrame, image=utils.deleteIcon, command=lambda:self.forgetWidgetThenCallback(deleteCallback)).grid(row=0, column=4, padx=2)
+        tk.Button(self.widgetFrame, image=Assets.deleteIcon.data, command=lambda:self.forgetWidgetThenCallback(deleteCallback)).grid(row=0, column=4, padx=2)
         
         self.registerCallback(self)
         self.reset()
@@ -56,13 +61,13 @@ class questWidget:
         self.registerCallback(self, oldId)
 
     def setFound(self):
-        self.updateStatus(utils.foundIcon)
+        self.updateStatus(Assets.foundIcon.data)
 
     def setUnchecked(self):
-        self.updateStatus(utils.uncheckedIcon)
+        self.updateStatus(Assets.uncheckedIcon.data)
 
     def setUnfound(self):
-        self.updateStatus(utils.unfoundIcon)
+        self.updateStatus(Assets.unfoundIcon.data)
 
     def updateStatus(self, icon):
         self.questIconLabel.config(image=icon)

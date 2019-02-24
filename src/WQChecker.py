@@ -5,10 +5,15 @@ import datetime
 import sys
 
 import net.requester as requester
-import gui.gui as gui
 import utils
 import config
 
+from gui.view.MainView import MainView
+from gui.view.FoundPopup import FoundPopup
+
+
+mainView = MainView()
+foundPopup = FoundPopup()
 
 regions = {'eu':'EU', 'na':'NA'}
 region = config.region(lambda:'eu', False)
@@ -21,7 +26,7 @@ countdown = 0
     
 def checkWQ():
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    gui.mainView.setLastCheckValue(now)
+    mainView.setLastCheckValue(now)
 
     html = requester.getWorldQuestsHtml(extensions, region)
 
@@ -29,7 +34,8 @@ def checkWQ():
         for qid, qw in quests.items():
             if html.find('"url":"\/quest=' + str(qid) + '","') > 0:
                 qw.setFound()
-                gui.popupView(str(qid) + ' is up !')
+                foundPopup.buildFoundPopup(str(qid) + ' is up !')
+                foundPopup.mainLoop()
             else:
                 qw.setUnfound()
     except RuntimeError as e:
@@ -37,11 +43,6 @@ def checkWQ():
         print(e.__str__)
         checkWQ()
     print('Checked quests ' + str(quests.keys()) + ' at ' + now)
-    
-def changeRegion(newRegion):
-    global region
-    region = config.region(lambda:newRegion)
-    checkerLoop()
 
 def stopTimer():
     try:
@@ -70,7 +71,7 @@ def countdownLoop():
     global countdown
     decrement = 1
     stopCountdown()
-    gui.mainView.setNextCheckValue(countdown)
+    mainView.setNextCheckValue(countdown)
     countdown -= decrement
     timerCountdown = threading.Timer(decrement, countdownLoop)
     timerCountdown.start()
@@ -89,16 +90,10 @@ def registerQuest(questWidget=None, oldId=None):
         config.quest(oldId, None)
     # there is a new quest to add
     if questWidget != None:
-        # check new quest id type
-        try:
-            qid = int(questWidget.id)
-        except ValueError:
-            print('Invalid value for quest id: "' + str(questWidget.id) + '"')
-            questWidget.reset()
         # store in running data
-        quests[qid] = questWidget
+        quests[questWidget.id] = questWidget
         # store in config data
-        config.quest(qid, lambda:None)
+        config.quest(questWidget.id, lambda:None)
         # async quest name fetching
         def setQuestNameThread(questWidget):
             questWidget.setQuestName(config.questCache(questWidget.id, lambda:requester.getQuestName(questWidget.id)))
@@ -112,9 +107,14 @@ def setInterval(newInterval):
     interval = config.interval(lambda:newInterval)
     checkerLoop()
 
+def setRegion(newRegion):
+    global region
+    region = config.region(lambda:newRegion)
+    checkerLoop()
 
-mainView = gui.mainView.buildMainView(quests=quests, regions=regions, region=region, interval=interval, closeCallback=exitApp, regionCallback=changeRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuest, setIntervalCallback=setInterval)
+
+mainView.buildMainView(quests=quests, regions=regions, region=region, interval=interval, closeCallback=exitApp, regionCallback=setRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuest, setIntervalCallback=setInterval)
 
 checkerLoop()
 
-mainView.mainloop()
+mainView.mainLoop()

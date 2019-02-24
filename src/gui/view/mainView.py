@@ -2,30 +2,21 @@ import time
 import tkinter as tk
 
 import utils
-from gui.widget.questWidget import questWidget
+import AssetsLibrary as Assets
 
-def hr(parentFrame):
-    tk.Frame(parentFrame, height=1, background='#BBB').pack(fill=tk.BOTH, expand=True, padx=10, pady=6)
+from gui.view.View import View
+from gui.widget.QuestWidget import QuestWidget
+from gui.widget.HrWidget import HrWidget
 
-class mainView:
 
-    root = tk.Tk()
-
-    statusText = None
-    lastCheckLabel = None
-    nextCheckLabel = None
-
-    regionVar = None # to prevent garbage collecting
+class MainView(View):
+    regionVar = None # prevent garbage collecting
 
     questsWidgets = []
 
-    def __init__(self):
-        utils.loadAssets()
-
     def buildMainView(self, quests, regions, region, interval, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, setIntervalCallback):
-
         self.root.wm_title('World Quests Checker')
-        self.root.tk.call('wm', 'iconphoto', self.root._w, utils.favicon)
+        self.root.tk.call('wm', 'iconphoto', self.root._w, Assets.favicon.data)
         self.root.resizable(False, False)
         self.root.minsize(300, 0)
         self.root.protocol("WM_DELETE_WINDOW", closeCallback)
@@ -50,7 +41,7 @@ class mainView:
             radioButton.pack(side=tk.LEFT)
 
         # Horizontal separation
-        hr(mainFrame)
+        HrWidget(mainFrame)
 
         # Last Check
 
@@ -88,7 +79,7 @@ class mainView:
         tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=2, sticky=tk.N)
 
         # Horizontal separation
-        hr(mainFrame)
+        HrWidget(mainFrame)
 
         # Quests subscriptions
 
@@ -97,15 +88,13 @@ class mainView:
         questsFrame.grid_columnconfigure(0, weight=1)
 
         def buildQuestWidget(q):
-            qw = questWidget()
-
+            qw = QuestWidget()
             def removeQuestWidgetThenCallback(questWidget):
                 try:
                     self.questsWidgets.remove(questWidget)
                     questRegisterCallback(oldId=questWidget.id)
                 except ValueError:
                     print('Remove questWidget ' + str(questWidget) + ' failed')
-
             qw.buildWidget(questsFrame=questsFrame, registerCallback=questRegisterCallback, deleteCallback=removeQuestWidgetThenCallback, questId=q)
             return qw
             
@@ -127,10 +116,10 @@ class mainView:
         newQuestEntry.grid(row=0, column=0, sticky=tk.W)
         newQuestEntry.bind('<Return>', newQuestSubscription)
 
-        tk.Button(newQuestFrame, image=utils.addIcon, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
+        tk.Button(newQuestFrame, image=Assets.addIcon.data, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
 
         # Horizontal separation
-        hr(mainFrame)
+        HrWidget(mainFrame)
 
         # Buttons
 
@@ -138,8 +127,6 @@ class mainView:
         buttonsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=5)
 
         tk.Button(buttonsFrame, text='Check now', command=checkNowCallback).pack(padx=2, anchor=tk.E)
-
-        return self.root
 
     def setLastCheckValue(self, value):
         self.lastCheckLabel.config(text=value)
