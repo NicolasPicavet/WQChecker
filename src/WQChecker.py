@@ -34,6 +34,7 @@ def checkWQ():
         for qid, qw in quests.items():
             if html.find('"url":"\/quest=' + str(qid) + '","') > 0:
                 qw.setFound()
+                mainView.root.focus_force()
                 foundPopup.buildFoundPopup(str(qid) + ' is up !')
                 foundPopup.mainLoop()
             else:
