@@ -67,7 +67,7 @@ class MainView(View):
         lastCheckFrame.grid_columnconfigure(0, weight=1)
 
         tk.Label(lastCheckFrame, text='Last check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
-        self.lastCheckLabel = tk.Label(lastCheckFrame, text='lastCheckValue', anchor=tk.W)
+        self.lastCheckLabel = tk.Label(lastCheckFrame, text='-- : -- : --', anchor=tk.W)
         self.lastCheckLabel.grid(row=1, column=1)
 
         # Next Check
@@ -77,7 +77,7 @@ class MainView(View):
         nextCheckFrame.grid_columnconfigure(0, weight=1)
 
         tk.Label(nextCheckFrame, text='Next check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
-        self.nextCheckLabel = tk.Label(nextCheckFrame, text='nextCheckValue', anchor=tk.W)
+        self.nextCheckLabel = tk.Label(nextCheckFrame, text='-- : -- : --', anchor=tk.W)
         self.nextCheckLabel.grid(row=1, column=1)
 
         # Interval
@@ -151,6 +151,8 @@ class MainView(View):
     def setNextCheckValue(self, value):
         if value >= 24 * Constants.HOUR_IN_SECOND:
             value = '> 1 day'
+        elif value < 0:
+            value = '-- : -- : --'
         else:
-            value = time.strftime('%H:%M:%S', time.gmtime(value))
+            value = time.strftime('%H : %M : %S', time.gmtime(value))
         self.nextCheckLabel.config(text=value)

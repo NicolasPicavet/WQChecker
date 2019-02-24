@@ -24,25 +24,30 @@ quests = config.getQuests()
 countdown = 0
     
 def checkWQ():
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    mainView.setLastCheckValue(now)
+    # there are quests needing checking
+    if quests:
+        now = datetime.datetime.now().strftime("%Y - %m - %d    %H : %M : %S")
+        mainView.setLastCheckValue(now)
+        
+        html = requester.getWorldQuestsHtml(region)
 
-    html = requester.getWorldQuestsHtml(region)
-
-    try:
-        for qid, qw in quests.items():
-            if html.find('"url":"\/quest=' + str(qid) + '","') > 0:
-                qw.setFound()
-                mainView.root.focus_force()
-                foundPopup.buildFoundPopup(str(qid) + ' is up !')
-                foundPopup.mainLoop()
-            else:
-                qw.setUnfound()
-    except RuntimeError as e:
-        # workaround when quests change size during loop
-        print(e.__str__)
-        checkWQ()
-    print('Checked quests ' + str(quests.keys()) + ' at ' + now)
+        try:
+            for qid, qw in quests.items():
+                if html.find('"url":"\/quest=' + str(qid) + '","') > 0:
+                    qw.setFound()
+                    mainView.root.focus_force()
+                    foundPopup.buildFoundPopup(str(qid) + ' is up !')
+                    foundPopup.mainLoop()
+                else:
+                    qw.setUnfound()
+        except RuntimeError as e:
+            # workaround when quests change size during loop
+            print(e.__str__)
+            checkWQ()
+        print('Checked quests ' + str(quests.keys()) + ' at ' + now)
+    # no quest needs checking
+    else:
+        noQuestToCheck()
 
 def stopTimer():
     try:
@@ -76,24 +81,39 @@ def countdownLoop():
     timerCountdown = threading.Timer(decrement, countdownLoop)
     timerCountdown.start()
 
+def noQuestToCheck():
+    stopTimer()
+    stopCountdown()
+    mainView.setNextCheckValue(-1)
+
 def exitApp():
     stopCountdown()
     stopTimer()
     sys.exit()
 
 def registerQuest(questWidget=None, oldId=None):
-    # there is an old id to remove
+    # there is a quest subscription id to remove
     if oldId != None:
         # remove from running data
         quests.pop(oldId)
         # remove from config data
         config.quest(oldId, None)
+        # that was the last quest
+        if not quests:
+            noQuestToCheck()
     # there is a new quest to add
     if questWidget != None:
+        restart = False
+        # first quest added, the loop will need to restart
+        if not quests:
+            restart = True
         # store in running data
         quests[questWidget.id] = questWidget
         # store in config data
         config.quest(questWidget.id, lambda:None)
+        # restart after registering the first quest
+        if restart:
+            checkerLoop()
         # async quest name fetching
         def setQuestNameThread(questWidget):
             questWidget.setQuestName(config.questCache(questWidget.id, lambda:requester.getQuestName(questWidget.id)))
@@ -115,6 +135,7 @@ def setRegion(newRegion):
 
 mainView.buildMainView(quests=quests, region=region, interval=interval, closeCallback=exitApp, regionCallback=setRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuest, setIntervalCallback=setInterval)
 
-checkerLoop()
+if quests:
+    checkerLoop()
 
 mainView.mainLoop()
