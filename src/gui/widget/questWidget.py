@@ -5,6 +5,7 @@ import webbrowser
 import utils
 import AssetsLibrary as Assets
 import net.requester as requester
+import Constants
 
 from gui.widget.Widget import Widget
 
@@ -32,7 +33,7 @@ class QuestWidget(Widget):
         questVar.set(questId)
         questVar.trace('w', lambda name, index, mode, questVar=questVar: self.storeNewValueThenCallback(questVar.get()))
 
-        questEntry = tk.Entry(self.widgetFrame, textvariable=questVar, width=utils.QUEST_ID_ENTRY_WIDTH)
+        questEntry = tk.Entry(self.widgetFrame, textvariable=questVar, width=Constants.QUEST_ID_ENTRY_WIDTH)
         questEntry.grid(row=0, column=0, sticky=tk.W)
 
         self.questIconLabel = tk.Label(self.widgetFrame)
@@ -41,15 +42,12 @@ class QuestWidget(Widget):
         self.questNameLabel = tk.Label(self.widgetFrame, anchor=tk.W)
         self.questNameLabel.grid(row=0, column=2, sticky=tk.W)
 
-        tk.Button(self.widgetFrame, image=Assets.wowheadIcon.data, command=self._webLinkCallback).grid(row=0, column=3, padx=2)
+        tk.Button(self.widgetFrame, image=Assets.wowheadIcon.data, command=lambda:webbrowser.open_new(requester.getQuestUrl(self.id))).grid(row=0, column=3, padx=2)
 
         tk.Button(self.widgetFrame, image=Assets.deleteIcon.data, command=lambda:self.forgetWidgetThenCallback(deleteCallback)).grid(row=0, column=4, padx=2)
         
         self.registerCallback(self)
         self.reset()
-
-    def _webLinkCallback(self):
-        webbrowser.open_new(requester.getQuestUrl(self.id))
 
     def forgetWidgetThenCallback(self, deleteCallback):
         self.widgetFrame.pack_forget()

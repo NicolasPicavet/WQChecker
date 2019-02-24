@@ -7,6 +7,7 @@ import sys
 import net.requester as requester
 import utils
 import config
+import Constants
 
 from gui.view.MainView import MainView
 from gui.view.FoundPopup import FoundPopup
@@ -15,10 +16,8 @@ from gui.view.FoundPopup import FoundPopup
 mainView = MainView()
 foundPopup = FoundPopup()
 
-regions = {'eu':'EU', 'na':'NA'}
 region = config.region(lambda:'eu', False)
-interval = config.interval(lambda:3 * utils.HOUR_IN_SECOND, False)
-extensions = ['legion', 'bfa']
+interval = config.interval(lambda:3 * Constants.HOUR_IN_SECOND, False)
 quests = config.getQuests()
 # quests = {51974:None, 51976:None, 51977:None, 51978:None}
 
@@ -28,7 +27,7 @@ def checkWQ():
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     mainView.setLastCheckValue(now)
 
-    html = requester.getWorldQuestsHtml(extensions, region)
+    html = requester.getWorldQuestsHtml(region)
 
     try:
         for qid, qw in quests.items():
@@ -114,7 +113,7 @@ def setRegion(newRegion):
     checkerLoop()
 
 
-mainView.buildMainView(quests=quests, regions=regions, region=region, interval=interval, closeCallback=exitApp, regionCallback=setRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuest, setIntervalCallback=setInterval)
+mainView.buildMainView(quests=quests, region=region, interval=interval, closeCallback=exitApp, regionCallback=setRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuest, setIntervalCallback=setInterval)
 
 checkerLoop()
 

@@ -1,3 +1,5 @@
+import Constants
+
 import requests
 from requests.exceptions import RequestException
 from contextlib import closing
@@ -9,10 +11,13 @@ QUEST_URL= 'https://www.wowhead.com/quest='
 def getQuestUrl(questId):
     return QUEST_URL + str(questId)
 
-def getWorldQuestsHtml(extensions, region, dump=False):
+def getWorldQuestUrl(expansion, region):
+    return WORLD_QUEST_URL + expansion + '/' + region
+
+def getWorldQuestsHtml(region, dump=False):
     html = ''
-    for e in extensions:
-        html += str(_get(WORLD_QUEST_URL + e + '/' + region, dump))
+    for e in Constants.EXPANSIONS:
+        html += str(_get(getWorldQuestUrl(e, region), dump))
     return html
 
 def getQuestName(questId, dump=False):
