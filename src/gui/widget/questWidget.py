@@ -46,8 +46,8 @@ class QuestWidget(Widget):
 
         tk.Button(self.widgetFrame, image=Assets.deleteIcon.data, command=lambda:self.forgetWidgetThenCallback(deleteCallback)).grid(row=0, column=4, padx=2)
         
-        self.registerCallback(self)
         self.reset()
+        self.registerCallback(self)
 
     def forgetWidgetThenCallback(self, deleteCallback):
         self.widgetFrame.pack_forget()
