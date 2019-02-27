@@ -19,6 +19,8 @@ python3 src/WQChecker.py
 
 ## Usage
 
+![Screenshot version 4.1](https://i.imgur.com/uNKEACC.png "Screenshot version 4.1")
+
 1. Select your Region
 2. Add quest ids to track
 3. A popup will warn you when a quest is up
