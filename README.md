@@ -7,7 +7,15 @@ Download the correct executable for your OS in [releases](https://github.com/Nic
 
 #### from sources
 
---incoming--
+You will need [python3](https://www.python.org/), [python**3**-pip](https://stackoverflow.com/questions/6587507/how-to-install-pip-with-python-3) and [python**3**-tk](https://stackoverflow.com/questions/6084416/tkinter-module-not-found-on-ubuntu)
+next
+```
+pip3 install beautifulsoup4 Pillow
+```
+then
+```
+python3 src/WQChecker.py
+```
 
 ## Usage
 
