@@ -135,7 +135,14 @@ def setRegion(newRegion):
 
 mainView.buildMainView(quests=quests, region=region, interval=interval, closeCallback=exitApp, regionCallback=setRegion, checkNowCallback=checkWQ, questRegisterCallback=registerQuest, setIntervalCallback=setInterval)
 
-if quests:
-    checkerLoop()
+
+# Keeping UI in main thread
+def checkerLoopThread():
+    if quests:
+        checkerLoop()
+    return # close thread
+t = threading.Thread(target=checkerLoopThread)
+t.setDaemon(True)
+t.start()
 
 mainView.mainLoop()
