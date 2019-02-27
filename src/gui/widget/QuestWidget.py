@@ -71,6 +71,7 @@ class QuestWidget(Widget):
         self.questIconLabel.config(image=icon)
 
     def setQuestName(self, questName):
+        self.questName = questName
         self.questNameLabel.config(text=questName)
 
     def reset(self):

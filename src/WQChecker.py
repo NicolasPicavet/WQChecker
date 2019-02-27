@@ -14,7 +14,7 @@ from gui.view.FoundPopup import FoundPopup
 
 
 mainView = MainView()
-foundPopup = FoundPopup()
+foundPopups = {}
 
 region = config.region(lambda:'eu', False)
 interval = config.interval(lambda:3 * Constants.HOUR_IN_SECOND, False)
@@ -36,8 +36,14 @@ def checkWQ():
                 if html.find('"url":"\/quest=' + str(qid) + '","') > 0:
                     qw.setFound()
                     mainView.root.focus_force()
-                    foundPopup.buildFoundPopup(str(qid) + ' is up !')
-                    foundPopup.mainLoop()
+
+                    def createFoundPopup():
+                        if not qid in foundPopups:
+                            foundPopups[qid] = FoundPopup()
+                            foundPopups[qid].buildFoundPopup(qid, qw.questName)
+                            foundPopups[qid].mainLoop()
+                    createFoundPopup()
+
                 else:
                     qw.setUnfound()
         except RuntimeError as e:
