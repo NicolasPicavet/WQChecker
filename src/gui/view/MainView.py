@@ -17,6 +17,10 @@ class MainView(View):
 
     questsWidgets = []
 
+    instructionFont = ('Helvetica', 10, 'bold')
+
+    readmeGitHubUrl = 'https://github.com/NicolasPicavet/WQChecker#user-content-how-to-find-a-quest-id-to-track'
+
     def buildMainView(self, quests, region, interval, closeCallback, regionCallback, checkNowCallback, questRegisterCallback, setIntervalCallback):
         self.root.wm_title('World Quests Checker')
         self.root.tk.call('wm', 'iconphoto', self.root._w, Assets.favicon.data)
@@ -30,26 +34,13 @@ class MainView(View):
         mainFrame = tk.Frame(paddingFrame, padx=7, pady=7)
         mainFrame.pack(fill=tk.BOTH, expand=True)
 
-        # World Quests
-
-        worldQuestsFrame = tk.Frame(mainFrame)
-        worldQuestsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        worldQuestsFrame.grid_columnconfigure(0, weight=1)
-
-        tk.Label(worldQuestsFrame, text='World Quests', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
-
-        def _createExpansionButton(expansion, region):
-            tk.Button(worldQuestsFrame, image=Assets.library[e].data, command=lambda:webbrowser.open_new(requester.getWorldQuestUrl(expansion, self.regionVar.get()))).pack(side=tk.LEFT, padx=2)
-        for e in Constants.EXPANSIONS:
-            _createExpansionButton(e, region)
-
         # Region
 
         regionFrame = tk.Frame(mainFrame)
         regionFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         regionFrame.grid_columnconfigure(0, weight=1)
 
-        tk.Label(regionFrame, text='Region', anchor=tk.W).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
+        tk.Label(regionFrame, text='1. Select your region', anchor=tk.W, font=self.instructionFont).pack(fill=tk.BOTH, expand=True)
         
         self.regionVar = tk.StringVar(value=region)
         def _createRegionRadio(regionKey, regionName):
@@ -60,43 +51,32 @@ class MainView(View):
         # Horizontal separation
         HrWidget(mainFrame)
 
-        # Last Check
+        # Quests help
 
-        lastCheckFrame = tk.Frame(mainFrame)
-        lastCheckFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        lastCheckFrame.grid_columnconfigure(0, weight=1)
+        questsHelpFrame = tk.Frame(mainFrame)
+        questsHelpFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        questsHelpFrame.grid_columnconfigure(0, weight=1)
 
-        tk.Label(lastCheckFrame, text='Last check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
-        self.lastCheckLabel = tk.Label(lastCheckFrame, text='-- : -- : --', anchor=tk.W)
-        self.lastCheckLabel.grid(row=1, column=1)
+        tk.Label(questsHelpFrame, text='2. Subscribe to quests using their ID number', anchor=tk.W, font=self.instructionFont).pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
 
-        # Next Check
+        tk.Button(questsHelpFrame, image=Assets.helpIcon.data, command=lambda:webbrowser.open_new(self.readmeGitHubUrl)).pack(side=tk.RIGHT, pady=2)
 
-        nextCheckFrame = tk.Frame(mainFrame)
-        nextCheckFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        nextCheckFrame.grid_columnconfigure(0, weight=1)
+        # New quest subscription
 
-        tk.Label(nextCheckFrame, text='Next check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
-        self.nextCheckLabel = tk.Label(nextCheckFrame, text='-- : -- : --', anchor=tk.W)
-        self.nextCheckLabel.grid(row=1, column=1)
+        def newQuestSubscription(event=None):
+            self.questsWidgets.append(buildQuestWidget(newQuestEntry.get()))
+            newQuestEntry.delete(0, tk.END)
 
-        # Interval
+        newQuestFrame = tk.Frame(mainFrame)
+        newQuestFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        newQuestFrame.grid_columnconfigure(1, weight=1)
 
-        intervalFrame = tk.Frame(mainFrame)
-        intervalFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        intervalFrame.grid_columnconfigure(0, weight=1)
+        newQuestEntry = tk.Entry(newQuestFrame, width=Constants.QUEST_ID_ENTRY_WIDTH)
+        newQuestEntry.grid(row=0, column=0, sticky=tk.W)
+        newQuestEntry.bind('<Return>', newQuestSubscription)
+        newQuestEntry.focus()
 
-        tk.Label(intervalFrame, text='Interval', anchor=tk.W).grid(row=0, column=0, sticky=tk.W + tk.N)
-
-        intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
-        intervalScale.set(round(interval / Constants.HOUR_IN_SECOND))
-        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue) * Constants.HOUR_IN_SECOND))
-        intervalScale.grid(row=0, column=1)
-        
-        tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=2, sticky=tk.N)
-
-        # Horizontal separation
-        HrWidget(mainFrame)
+        tk.Button(newQuestFrame, image=Assets.addIcon.data, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
 
         # Quests subscriptions
 
@@ -118,23 +98,56 @@ class MainView(View):
         self.questsWidgets = []
         for qid in quests.keys():
             self.questsWidgets.append(buildQuestWidget(qid))
+        
+        # World Quests
 
-        # New quest subscription
+        worldQuestsFrame = tk.Frame(mainFrame)
+        worldQuestsFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
 
-        def newQuestSubscription(event=None):
-            self.questsWidgets.append(buildQuestWidget(newQuestEntry.get()))
-            newQuestEntry.delete(0, tk.END)
+        def _createExpansionButton(expansion, region):
+            tk.Button(worldQuestsFrame, image=Assets.library[e].data, command=lambda:webbrowser.open_new(requester.getWorldQuestUrl(expansion, self.regionVar.get()))).pack(side=tk.RIGHT, padx=2)
+        for e in Constants.EXPANSIONS:
+            _createExpansionButton(e, region)
 
-        newQuestFrame = tk.Frame(mainFrame)
-        newQuestFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        newQuestFrame.grid_columnconfigure(1, weight=1)
+        # Horizontal separation
+        HrWidget(mainFrame)
 
-        newQuestEntry = tk.Entry(newQuestFrame, width=Constants.QUEST_ID_ENTRY_WIDTH)
-        newQuestEntry.grid(row=0, column=0, sticky=tk.W)
-        newQuestEntry.bind('<Return>', newQuestSubscription)
-        newQuestEntry.focus()
+        # Interval
 
-        tk.Button(newQuestFrame, image=Assets.addIcon.data, command=newQuestSubscription).grid(row=0, column=1, padx=2, pady=2, sticky=tk.W)
+        intervalFrame = tk.Frame(mainFrame)
+        intervalFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        intervalFrame.grid_columnconfigure(0, weight=1)
+
+        tk.Label(intervalFrame, text='3. Set your check timer', anchor=tk.W, font=self.instructionFont).grid(row=0, column=0, sticky=tk.W + tk.N)
+
+        tk.Label(intervalFrame, text='every', anchor=tk.W).grid(row=0, column=1, sticky=tk.N)
+
+        intervalScale = tk.Scale(intervalFrame, from_=1, to=6, orient=tk.HORIZONTAL)
+        intervalScale.set(round(interval / Constants.HOUR_IN_SECOND))
+        intervalScale.config(command=lambda scaleValue:setIntervalCallback(int(scaleValue) * Constants.HOUR_IN_SECOND))
+        intervalScale.grid(row=0, column=2)
+        
+        tk.Label(intervalFrame, text='hours', anchor=tk.W).grid(row=0, column=3, sticky=tk.N)
+
+        # Next Check
+
+        nextCheckFrame = tk.Frame(mainFrame)
+        nextCheckFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        nextCheckFrame.grid_columnconfigure(0, weight=1)
+
+        tk.Label(nextCheckFrame, text='Next check timer', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
+        self.nextCheckLabel = tk.Label(nextCheckFrame, text='-- : -- : --', anchor=tk.W)
+        self.nextCheckLabel.grid(row=1, column=1)
+
+        # Last Check
+
+        lastCheckFrame = tk.Frame(mainFrame)
+        lastCheckFrame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        lastCheckFrame.grid_columnconfigure(0, weight=1)
+
+        tk.Label(lastCheckFrame, text='Last check', anchor=tk.W).grid(row=1, column=0, sticky=tk.W)
+        self.lastCheckLabel = tk.Label(lastCheckFrame, text='-- : -- : --', anchor=tk.W)
+        self.lastCheckLabel.grid(row=1, column=1)
 
         # Horizontal separation
         HrWidget(mainFrame)

@@ -4,4 +4,4 @@ QUEST_ID_ENTRY_WIDTH = 7
 HR_BACKGROUND = '#BBB'
 
 EXPANSIONS = ['legion', 'bfa']
-REGIONS = {'eu':'EU', 'na':'NA'}
+REGIONS = {'eu':'Europe', 'na':'North America'}
