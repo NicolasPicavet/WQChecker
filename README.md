@@ -1,20 +1,26 @@
 # WQChecker
-Scrap WowHead data to monitor world quests outside the game and be warned when a world quest is up.
+Scrap WowHead data to monitor world quests status without manualy log into World of Warcraft and tediously check all regions and world quests.
 
 ## Run
 
-### Windows
+Download the correct executable for your OS in [releases](https://github.com/NicolasPicavet/WQChecker/releases) and run it
 
-Download executable in releases
+#### from sources
 
-### from sources
-
-Using [pipenv](https://pipenv.readthedocs.io/en/latest/)
-- `pipenv install`
-- `pipenv run python ./src/WQChecker.py`
+--incoming--
 
 ## Usage
 
 1. Select your Region
 2. Add quest ids to track
-3. Wait for the popup !
+3. A popup will warn you when a quest is up
+
+#### How to find a quest id to track
+
+1. Search for your quest on [WowHead](https://www.wowhead.com/) or [WowDB](https://www.wowdb.com/)
+2. Look at your browser's address bar
+e.g. https://www.wowhead.com/quest=52299
+3. Copy the 5 digits number
+4. Past it in WQChecker text input
+5. Click on the green plus
+
